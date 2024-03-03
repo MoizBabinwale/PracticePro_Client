@@ -26,23 +26,27 @@ function AllTestDetails() {
   };
   return (
     <div className="container">
-      <h1>All Results</h1>
-      <table className="table-fixed">
-        <thead>
+      <h1 className="flex justify-start p-3 ml-3 font-semibold">All Results</h1>
+      <table className="table-fixed w-full">
+        <thead className="bg-slate-500 text-white">
           <tr>
-            <th>Sr. No.</th>
-            <th>Total Questions</th>
-            <th>Date</th>
-            <th>Score</th>
+            <th className="w-1/6 py-2 pl-2">Sr. No.</th>
+            <th className="w-1/6 py-2">Total Questions</th>
+            <th className="w-1/4 py-2">Date</th>
+            <th className="w-1/6 py-2">Score</th>
+            <th className="w-1/4 py-2">Percentage</th>
+            <th className="w-1/6 py-2">Status</th>
           </tr>
         </thead>
         <tbody>
           {result.map((item, index) => (
-            <tr>
-              <td>{index + 1}</td>
-              <td>{item.totalQuestions}</td>
-              <td>{item.date}</td>
-              <td>{item.score}</td>
+            <tr key={index} className={index % 2 === 0 ? "bg-gray-100" : ""}>
+              <td className="py-2 pl-2">{index + 1}</td>
+              <td className="py-2">{item.totalQuestions}</td>
+              <td className="py-2">{new Date(item.date).toLocaleDateString()}</td>
+              <td className="py-2">{item.score}</td>
+              <td className="py-2">{((item.score / item.totalQuestions) * 100).toFixed(2)}%</td>
+              <td className="py-2">{item.score >= item.totalQuestions * 0.6 ? "Pass" : "Fail"}</td>
             </tr>
           ))}
         </tbody>

@@ -142,6 +142,9 @@ function StartTest() {
     });
     setQuestions(newData);
   };
+  const handleResetData = () => {
+    dispatch(resetResult());
+  };
 
   return (
     <div className="container">
@@ -155,7 +158,7 @@ function StartTest() {
               <br />
               <p className="text-black items-center">Total Score : {resultFetched.score}</p>
               <Link to="/">
-                <button className="bg-blue-500 flex items-center hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => dispatch(resetResult())}>
+                <button className="bg-blue-500 flex items-center hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => handleResetData()}>
                   <IoIosHome /> &nbsp;&nbsp; Go to Home Page
                 </button>
               </Link>
