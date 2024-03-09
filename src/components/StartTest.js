@@ -5,6 +5,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { IoIosHome } from "react-icons/io";
+import Swal from "sweetalert2";
 
 function StartTest() {
   const [testData, setTestData] = useState({});
@@ -87,7 +88,21 @@ function StartTest() {
         testHeaders
       );
       if (response.status === 201) {
-        setQuestions(response.data.questions);
+        console.log(response.data.questions);
+        if (response.data.questions.length > 0) {
+          setQuestions(response.data.questions);
+        } else {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "No Question Found with selected Parameter ",
+            showConfirmButton: false,
+            timer: 2000,
+          });
+          localStorage.removeItem("testData");
+          localStorage.removeItem("timeLeft");
+          navigate("/giveTest");
+        }
       }
     } catch (error) {
       console.error("Error fetching questions:", error);
@@ -112,11 +127,12 @@ function StartTest() {
   useEffect(() => {
     if (fetchResult) {
       setResultFetched(fetchResult.result);
-      setGettingData(fetchResult.retrievingResult);
-      setSendingData(fetchResult.sendingData);
+      // setGettingData(fetchResult.retrievingResult);
+      // setSendingData(fetchResult.sendingData);
     }
   }, [fetchResult]);
   const handleSubmit = () => {
+    document.getElementById("submitTest").disabled = true;
     try {
       const answerData = {
         questions,
@@ -169,7 +185,7 @@ function StartTest() {
         <></>
       )}
       {!resultFetched && (
-        <div>
+        <div className={`${gettingData || sendingData ? "blur" : ""}`}>
           <div className="my-2 py-3 shadow-md px-4">
             <h1 className="font-bold ">Exam Name : {testData.testName}</h1>
             <div>Time Left: {formatTime(timeLeft)}</div>
@@ -197,7 +213,7 @@ function StartTest() {
                         checked={questions[currentQuestionIndex].selectedOption === option._id} // Add this if you want to control the checked state
                       />
                       {String.fromCharCode(65 + index)}
-                      {")"} {option.text}
+                      {")"} {option.text.split(".")[1] === "png" || option.text.split(".")[1] === "jpg" || option.text.split(".")[1] === "jpeg" ? <img className="h-[100px] ml-3" height={"100px"} width={"25%"} src={"http://localhost:5000/" + option.text} alt="option" /> : option.text}
                     </li>
                   ))}
                 </ul>
@@ -205,7 +221,7 @@ function StartTest() {
 
               {/* Next and previous buttons */}
               <div className="flex flex-wrap relative items-end justify-end gap-2">
-                <button className="flex-end bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" onClick={handleSubmit}>
+                <button className="flex-end bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" id="submitTest" onClick={handleSubmit}>
                   Submit
                 </button>
                 <button className="flex-end bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" onClick={handlePreviousQuestion} disabled={currentQuestionIndex === 0}>

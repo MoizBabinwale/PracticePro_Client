@@ -351,7 +351,7 @@ const CreateTest = () => {
         </div>
       </div>
 
-      {enableEditQuestion && <AddQuestions testId={testId} topicId={topicId} testData={questions} />}
+      {enableEditQuestion && <AddQuestions testId={testId} topicId={topicId} testData={questions} getAllQuestions={getAllQuestions} />}
 
       {/* <Dialog open={size === "xs" || size === "sm" || size === "md" || size === "lg" || size === "xl" || size === "xxl"} size={size || "md"} handler={handleOpen}> */}
 

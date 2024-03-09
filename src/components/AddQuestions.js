@@ -7,11 +7,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { testHeaders } from "../actions/testAction";
 import { nanoid } from "nanoid";
 import toast from "react-hot-toast";
+import { MdDelete } from "react-icons/md";
 
-const AddQuestions = ({ testId, topicId, testData }) => {
+const AddQuestions = ({ testId, topicId, testData, getAllQuestions }) => {
   const [questionTitle, setQuestionTitle] = useState("");
   const [quesionCreated, setQuesionCreated] = useState(false);
   const [enableQuestions, setEnableQuestions] = useState(false);
+  const [uploadedImages, setUploadedImages] = useState([]);
+  const [questionWithImage, setQuestionWithImage] = useState(false);
 
   const [difficultyId, setDifficultyId] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState("");
@@ -24,9 +27,6 @@ const AddQuestions = ({ testId, topicId, testData }) => {
 
   useEffect(() => {
     if (testData) {
-      // for (const i in testData) {
-      //   document.getElementById(`diff_${testData[i]._id}`).checked = true;
-      // }
       console.log("testData ", testData);
       setQuestionData(testData);
     }
@@ -38,6 +38,13 @@ const AddQuestions = ({ testId, topicId, testData }) => {
     { text: "", isCorrect: false },
     { text: "", isCorrect: false },
   ]);
+
+  const handleImageChange = (event, index) => {
+    const file = event.target.files[0];
+    const updatedImages = [...uploadedImages];
+    updatedImages[index] = file;
+    setUploadedImages(updatedImages);
+  };
 
   const handleChangeOption = (index, value) => {
     const newOptions = [...options];
@@ -61,20 +68,97 @@ const AddQuestions = ({ testId, topicId, testData }) => {
     }
   }, [getTest]);
 
+  const handleImageQuestion = async () => {
+    try {
+      const images = [...uploadedImages];
+      if (images.length <= 3) {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Upload all images",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        return;
+      }
+      const newOptions = [...options];
+
+      if (!newOptions.some((option) => option.isCorrect)) {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Select Correct Answer",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        return;
+      }
+
+      if (!selectedDifficulty || !questionTitle) {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Select Difficulty or Enter Question ",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        return;
+      }
+
+      const formData = new FormData();
+
+      // const payload = {
+      //   text: questionTitle,
+      //   options: newOptions, // Filter out empty options
+      //   subjectId: topicId,
+      //   difficultyLevel: selectedDifficulty,
+      //   testId: testId,
+      //   avatar: images,
+      // };
+      console.log("images ", images);
+      images.forEach((file, index) => {
+        formData.append(`avatar[]`, file);
+      });
+      formData.append("text", JSON.stringify(questionTitle));
+      formData.append("options", JSON.stringify(newOptions));
+      formData.append("subjectId", JSON.stringify(topicId));
+      formData.append("difficultyLevel", JSON.stringify(selectedDifficulty));
+      formData.append("testId", JSON.stringify(testId));
+
+      const response = await axios.post(TEST_API + "/createQuestionWithImage", formData, { headers: { ...testHeaders.headers, "Content-Type": "multipart/form-data" } });
+      if (response) {
+        console.log(response);
+        toast.success("Question Created Successfully!");
+        document.getElementById("ask-ques-title").value = "";
+        setOptions([
+          { text: "", isCorrect: false },
+          { text: "", isCorrect: false },
+          { text: "", isCorrect: false },
+          { text: "", isCorrect: false },
+        ]);
+        setUploadedImages([]);
+        setSelectedDifficulty("");
+      }
+    } catch (error) {
+      console.log("error ", error);
+    }
+  };
   const handleNext = async () => {
     try {
       const newOptions = [...options];
       // Send data to backend API
-      for (const i in newOptions) {
-        if (newOptions[i].text === "") {
-          Swal.fire({
-            position: "center",
-            icon: "error",
-            title: "option Can not be empty",
-            showConfirmButton: false,
-            timer: 2000,
-          });
-          return;
+      if (!questionWithImage) {
+        for (const i in newOptions) {
+          if (newOptions[i].text === "") {
+            Swal.fire({
+              position: "center",
+              icon: "error",
+              title: "option Can not be empty",
+              showConfirmButton: false,
+              timer: 2000,
+            });
+            return;
+          }
         }
       }
       if (!newOptions.some((option) => option.isCorrect)) {
@@ -189,7 +273,36 @@ const AddQuestions = ({ testId, topicId, testData }) => {
     setQuestionData(newData);
   };
 
-  var myArray = ["a", "b", "c", "d"];
+  const handleDeleteButton = async (ID) => {
+    try {
+      const response = await axios.post(TEST_API + "/deleteQeustions", { _id: ID }, testHeaders);
+      if (response) {
+        toast.success("Question Deleated Successfully!");
+        // getAllQuestions();
+      }
+    } catch (error) {
+      console.log("error ", error);
+    }
+  };
+
+  const handleChnageQuestionType = (e) => {
+    console.log("e.target.value", e.target.value);
+    if (e.target.value === "1") {
+      setQuestionWithImage(false);
+    } else {
+      setQuestionWithImage(true);
+    }
+    document.getElementById("ask-ques-title").value = "";
+    setOptions([
+      { text: "", isCorrect: false },
+      { text: "", isCorrect: false },
+      { text: "", isCorrect: false },
+      { text: "", isCorrect: false },
+    ]);
+    setUploadedImages([]);
+    setSelectedDifficulty("");
+  };
+
   return (
     <div className="mx-5 flex flex-col" style={{ width: "100%" }}>
       <div className="ask-ques-container">
@@ -212,34 +325,61 @@ const AddQuestions = ({ testId, topicId, testData }) => {
               <label htmlFor="options" className="block mb-2">
                 Options
               </label>
-              {options.map((option, index) => (
-                <div key={index} className="flex items-center mb-2">
-                  <input type="text" value={option.text} onChange={(e) => handleChangeOption(index, e.target.value)} className="w-full border-gray-300 rounded-md px-4 py-2 mr-2 focus:outline-none focus:border-blue-500" placeholder={`Option ${index + 1}`} />
-                  <label className="inline-flex items-center cursor-pointer">
-                    <input type="radio" name="correctAnswer" checked={option.isCorrect} onChange={() => handleCorrectChange(index)} className="form-radio h-5 w-5 text-blue-500" />
-                    <span className="ml-2">Correct</span>
-                  </label>
-                </div>
-              ))}
+              {!questionWithImage ? (
+                <>
+                  {options.map((option, index) => (
+                    <div key={index} className="flex items-center mb-2">
+                      <input type="text" value={option.text} onChange={(e) => handleChangeOption(index, e.target.value)} className="w-full border-gray-300 rounded-md px-4 py-2 mr-2 focus:outline-none focus:border-blue-500" placeholder={`Option ${index + 1}`} />
+                      <label className="inline-flex items-center cursor-pointer">
+                        <input type="radio" name="correctAnswer" checked={option.isCorrect} onChange={() => handleCorrectChange(index)} className="form-radio h-5 w-5 text-blue-500" />
+                        <span className="ml-2">Correct</span>
+                      </label>
+                    </div>
+                  ))}
+                </>
+              ) : (
+                <>
+                  {options.map((option, index) => (
+                    <div key={index} className="flex items-center mb-2">
+                      <div>
+                        <input type="file" onChange={(e) => handleImageChange(e, index)} />
+                        <label className="inline-flex items-center cursor-pointer">
+                          <input type="radio" name="correctAnswer" checked={option.isCorrect} onChange={() => handleCorrectChange(index)} className="form-radio h-5 w-5 text-blue-500" />
+                          <span className="ml-2">Correct</span>
+                        </label>
+                      </div>
+                      <br />
+                      {uploadedImages[index] && <img src={URL.createObjectURL(uploadedImages[index] ? uploadedImages[index] : "")} alt={`Option ${index + 1}`} style={{ maxWidth: "100px" }} />}
+                      <br />
+                    </div>
+                  ))}
+                </>
+              )}
             </div>
             <div className="flex justify-between">
-              <ul className="flex">
-                {difficulties.map((item, index) => (
-                  <li key={index} className="ml-3">
-                    <label className="flex gap-1">
-                      <input
-                        type="radio"
-                        name="difficulty"
-                        value={item._id}
-                        checked={selectedDifficulty === item._id} // Assuming you have a state variable selectedDifficulty to keep track of the selected difficulty
-                        onChange={() => handleDifficultyChange(item._id)} // Assuming you have a function handleDifficultyChange to update the selected difficulty
-                      />
-                      {item.level}
-                    </label>
-                  </li>
-                ))}
-              </ul>
-              <button type="button" onClick={handleNext} className=" btn-sm bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+              <div className="flex items-center gap-3">
+                <ul className="flex">
+                  {difficulties.map((item, index) => (
+                    <li key={index} className="ml-3">
+                      <label className="flex gap-1">
+                        <input
+                          type="radio"
+                          name="difficulty"
+                          value={item._id}
+                          checked={selectedDifficulty === item._id} // Assuming you have a state variable selectedDifficulty to keep track of the selected difficulty
+                          onChange={() => handleDifficultyChange(item._id)} // Assuming you have a function handleDifficultyChange to update the selected difficulty
+                        />
+                        {item.level}
+                      </label>
+                    </li>
+                  ))}
+                </ul>
+                <select className="p-2 appearance-none border rounded-lg w-full focus:outline-none focus:border-blue-500" onChange={(e) => handleChnageQuestionType(e)}>
+                  <option value={1}>Question With Text</option>
+                  <option value={2}>Question With Images</option>
+                </select>
+              </div>
+              <button type="button" onClick={!questionWithImage ? handleNext : handleImageQuestion} className=" btn-sm bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
                 Next
               </button>
             </div>
@@ -266,30 +406,43 @@ const AddQuestions = ({ testId, topicId, testData }) => {
               {item.options.map((option, index) => (
                 <div key={index} className="flex items-center mb-2">
                   <span> {String.fromCharCode(65 + index)}</span>
-                  <input type="text" value={option.text} onChange={(e) => EditChangeOption(index, key, e.target.value)} className="w-full border-gray-300 rounded-md px-4 py-2 mr-2 focus:outline-none focus:border-blue-500" placeholder={`Option ${index + 1}`} />
+                  {option.text.split(".")[1] === "png" || option.text.split(".")[1] === "jpg" || option.text.split(".")[1] === "jpeg" ? (
+                    <div className="w-full h-[100px]">
+                      <img className="h-[100px] ml-3" height={"100px"} width={"25%"} src={"http://localhost:5000/" + option.text} alt="option" />
+                    </div>
+                  ) : (
+                    <input type="text" value={option.text} onChange={(e) => EditChangeOption(index, key, e.target.value)} className="w-full border-gray-300 rounded-md px-4 py-2 mr-2 focus:outline-none focus:border-blue-500" placeholder={`Option ${index + 1}`} />
+                  )}
                   <label className="inline-flex items-center cursor-pointer">
                     <input type="radio" name={`correctAnswer_${key}`} checked={option.isCorrect} onChange={() => EditCorrectOption(index, key)} className="form-radio h-5 w-5 text-blue-500" />
                     <span className="ml-2">Correct</span>
                   </label>
                 </div>
               ))}
-              <ul className="flex">
-                {difficulties.map((diff, index) => (
-                  <li key={index} className="ml-3">
-                    <label className="flex gap-1">
-                      <input
-                        type="radio"
-                        name={`difficulty_${key}`}
-                        defaultChecked={item.difficultyLevel === diff._id}
-                        // defaultChecked={item.difficultyLevel === diff._id ? true : false}
-                        id={`diff_${item._id}`}
-                        onChange={() => handleEditDifficultyChange(diff._id, key)} // Assuming you have a function handleDifficultyChange to update the selected difficulty
-                      />
-                      {diff.level}
-                    </label>
-                  </li>
-                ))}
-              </ul>
+              <div className="flex justify-between items-center">
+                <ul className="flex">
+                  {difficulties.map((diff, index) => (
+                    <li key={index} className="ml-3">
+                      <label className="flex gap-1">
+                        <input
+                          type="radio"
+                          name={`difficulty_${key}`}
+                          defaultChecked={item.difficultyLevel === diff._id}
+                          // defaultChecked={item.difficultyLevel === diff._id ? true : false}
+                          id={`diff_${item._id}`}
+                          onChange={() => handleEditDifficultyChange(diff._id, key)} // Assuming you have a function handleDifficultyChange to update the selected difficulty
+                        />
+                        {diff.level}
+                      </label>
+                    </li>
+                  ))}
+                </ul>
+                {item.optionType === "image" && (
+                  <button className="text-red-700" onClick={() => handleDeleteButton(item._id)}>
+                    <MdDelete />
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
