@@ -20,6 +20,8 @@ const AuthProvider = ({ children }) => {
   const checkLoggedIn = () => {
     const profile = JSON.parse(localStorage.getItem("Profile"));
     if (profile) {
+      const isAdminstatus = profile.data.isAdmin;
+      setIsAdmin(isAdminstatus);
       const token = profile.token;
       if (token) {
         const currentTime = Date.now();

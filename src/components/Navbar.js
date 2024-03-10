@@ -8,35 +8,13 @@ import { useNavigation } from "../context/NavContext";
 import { AuthContext } from "../context/AuthProvider";
 import { useContext } from "react";
 
-// import Box from '@mui/material/Box';
-// import Avatar from '@mui/material/Avatar';
-// import Menu from '@mui/material/Menu';
-// import MenuItem from '@mui/material/MenuItem';
-// import ListItemIcon from '@mui/material/ListItemIcon';
-// import Divider from '@mui/material/Divider';
-// import IconButton from '@mui/material/IconButton';
-// import Typography from '@mui/material/Typography';
-// import Tooltip from '@mui/material/Tooltip';
-// import PersonAdd from '@mui/icons-material/PersonAdd';
-// import Settings from '@mui/icons-material/Settings';
-// import Logout from '@mui/icons-material/Logout';
-
 function Navbar() {
   const { isNavOpen, toggleNav } = useNavigation();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const { isLoggedIn, logout, isPremiumUser } = useContext(AuthContext);
+  const { isLoggedIn, logout, isPremiumUser, isAdmin } = useContext(AuthContext);
   const toggleSearch = () => {
     setIsSearchOpen(!isSearchOpen);
   };
-
-  // const [anchorEl, setAnchorEl] = React.useState(null);
-  // const open = Boolean(anchorEl);
-  // const handleClick = (event) => {
-  //   setAnchorEl(event.currentTarget);
-  // };
-  // const handleClose = () => {
-  //   setAnchorEl(null);
-  // };
 
   return (
     <nav className={`nav ${isSearchOpen ? "openSearch" : ""} ${isNavOpen ? "openNav" : ""}`}>
@@ -55,19 +33,16 @@ function Navbar() {
             Home
           </Link>
         </li>
-        <li>
-          <Link className="Nav-link-tag" to="/viewAllTest">
-            All Results
-          </Link>
-        </li>
 
         {isLoggedIn && (
           <>
-            <li>
-              <Link className="Nav-link-tag" to="/createTest">
-                Create Test
-              </Link>
-            </li>
+            {isAdmin && (
+              <li>
+                <Link className="Nav-link-tag" to="/createTest">
+                  Create Test
+                </Link>
+              </li>
+            )}
             {!isPremiumUser && (
               <li>
                 <Link className="Nav-link-tag" to="/buyPremium">
@@ -75,6 +50,11 @@ function Navbar() {
                 </Link>
               </li>
             )}
+            <li>
+              <Link className="Nav-link-tag" to="/viewAllTest">
+                My Results
+              </Link>
+            </li>
           </>
         )}
         {isLoggedIn ? (

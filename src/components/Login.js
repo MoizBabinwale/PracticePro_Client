@@ -52,11 +52,23 @@ function Login() {
     }
   }, [loginState, signupState]);
 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   const handleSubmit = async () => {
     if (isSignup) {
       dispatch(login(email, password, authContext));
     } else {
-      dispatch(singUp(userName, email, password, phone));
+      if (phone.length === 10 && emailRegex.test(email)) {
+        dispatch(singUp(userName, email, password, phone));
+      } else {
+        Swal.fire({
+          position: "center",
+          icon: "warning",
+          title: "Enter Correct Phone or Email!",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      }
     }
   };
 
@@ -84,7 +96,7 @@ function Login() {
                 <label htmlFor="phhone" className="form-label">
                   Phone Number
                 </label>
-                <input type="text" className="form-control" placeholder="Enter Number" id="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
+                <input type="number" className="form-control" placeholder="Enter Number" id="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
               </div>
             </>
           )}
@@ -92,8 +104,7 @@ function Login() {
             <label htmlFor="email" className="form-label">
               Your Email
             </label>
-            <input type="email" className="form-control" id="email" placeholder="Enter Email" />
-            {/* value={email} onChange={(e) => setEmail(e.target.value)}  */}
+            <input type="email" className="form-control" id="email" placeholder="Enter Email" value={email} onChange={(e) => setEmail(e.target.value)} />
           </div>
           <div className="mb-3">
             <label htmlFor="password" className="form-label">

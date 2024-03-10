@@ -53,7 +53,7 @@ function GiveTest() {
       const response = await axios.get(TEST_API + "/getAllTest");
 
       if (response) {
-        setTestList(response.data.allTests);
+        setTestList(response.data.Tests);
         setLoading(false);
       }
     } catch (error) {

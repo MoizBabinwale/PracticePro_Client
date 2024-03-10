@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import AddQuestions from "./AddQuestions";
 import { Button, Dialog, DialogHeader, DialogBody, DialogFooter } from "@material-tailwind/react";
 
@@ -37,6 +37,8 @@ const CreateTest = () => {
   const [enableEditQuestion, setEnableEditQuestion] = useState(false);
   const [selectedTopics, setSelectedTopics] = useState([]);
 
+  const { isLoggedIn, isAdmin } = useContext(AuthContext);
+
   const handleOpen = (value) => setSize(value);
 
   const dispatch = useDispatch();
@@ -53,8 +55,7 @@ const CreateTest = () => {
   };
   const getTest = useSelector((state) => state.test);
   useEffect(() => {
-    const isLoggedIn = JSON.parse(localStorage.getItem("Profile"));
-    if (isLoggedIn) {
+    if (isLoggedIn && isAdmin) {
       setLoading(true);
       dispatch(getAllSubjects());
       dispatch(getDifficultyLevel());
@@ -81,7 +82,7 @@ const CreateTest = () => {
       const response = await axios.get(TEST_API + "/getAllTest");
 
       if (response) {
-        setTestList(response.data.allTests);
+        setTestList(response.data.Tests);
         setLoading(false);
       }
     } catch (error) {
