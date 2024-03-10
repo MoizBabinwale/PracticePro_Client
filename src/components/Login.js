@@ -75,13 +75,13 @@ function Login() {
           {!isSignup && (
             <>
               <div className="mb-3">
-                <label htmlFor="email" className="form-label">
+                <label htmlFor="name" className="form-label">
                   Name
                 </label>
                 <input type="text" className="form-control" placeholder="Enter Name" id="Name" value={userName} onChange={(e) => setName(e.target.value)} />
               </div>
               <div className="mb-3">
-                <label htmlFor="email" className="form-label">
+                <label htmlFor="phhone" className="form-label">
                   Phone Number
                 </label>
                 <input type="text" className="form-control" placeholder="Enter Number" id="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
@@ -92,7 +92,8 @@ function Login() {
             <label htmlFor="email" className="form-label">
               Your Email
             </label>
-            <input type="email" className="form-control" id="email" placeholder="Enter Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <input type="email" className="form-control" id="email" placeholder="Enter Email" />
+            {/* value={email} onChange={(e) => setEmail(e.target.value)}  */}
           </div>
           <div className="mb-3">
             <label htmlFor="password" className="form-label">

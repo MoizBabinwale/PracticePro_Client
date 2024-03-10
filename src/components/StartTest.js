@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { TEST_API } from "../actions/api";
+import { TEST_API, baseUrl } from "../actions/api";
 import { evaluateResult, resetResult, testHeaders } from "../actions/testAction";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -213,7 +213,7 @@ function StartTest() {
                         checked={questions[currentQuestionIndex].selectedOption === option._id} // Add this if you want to control the checked state
                       />
                       {String.fromCharCode(65 + index)}
-                      {")"} {option.text.split(".")[1] === "png" || option.text.split(".")[1] === "jpg" || option.text.split(".")[1] === "jpeg" ? <img className="h-[100px] ml-3" height={"100px"} width={"25%"} src={"http://localhost:5000/" + option.text} alt="option" /> : option.text}
+                      {")"} {option.text.split(".")[1] === "png" || option.text.split(".")[1] === "jpg" || option.text.split(".")[1] === "jpeg" ? <img className="h-[100px] ml-3" height={"100px"} width={"25%"} src={baseUrl + option.text} alt="option" /> : option.text}
                     </li>
                   ))}
                 </ul>

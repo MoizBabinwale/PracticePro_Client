@@ -1,17 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { testHeaders } from "../actions/testAction";
 import { TEST_API } from "../actions/api";
 import axios from "axios";
+import { AuthContext } from "../context/AuthProvider";
+import { useNavigate } from "react-router-dom";
 
 function AllTestDetails() {
   const [result, setResult] = useState([]);
   const [loading, setLoading] = useState(false);
-  useEffect(async () => {
-    getAllTestRes();
+
+  const { isLoggedIn, logout, isPremiumUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (isLoggedIn) {
+      getAllTestRes();
+    } else {
+      navigate("/login");
+    }
   }, []);
   const getAllTestRes = async () => {
     try {
       setLoading(true);
+      // const profile = JSON.parse(localStorage.getItem("Profile"));
+      // const  user =profile.data
+      // const payload = {
+      //   userId : user._id
+      // }
       const response = await axios.get(TEST_API + "/getAllResult", testHeaders);
 
       if (response) {

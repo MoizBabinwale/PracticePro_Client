@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { TEST_API } from "../actions/api";
+import { TEST_API, baseUrl } from "../actions/api";
 import Swal from "sweetalert2";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -408,7 +408,7 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions }) => {
                   <span> {String.fromCharCode(65 + index)}</span>
                   {option.text.split(".")[1] === "png" || option.text.split(".")[1] === "jpg" || option.text.split(".")[1] === "jpeg" ? (
                     <div className="w-full h-[100px]">
-                      <img className="h-[100px] ml-3" height={"100px"} width={"25%"} src={"http://localhost:5000/" + option.text} alt="option" />
+                      <img className="h-[100px] ml-3" height={"100px"} width={"25%"} src={baseUrl + option.text} alt="option" />
                     </div>
                   ) : (
                     <input type="text" value={option.text} onChange={(e) => EditChangeOption(index, key, e.target.value)} className="w-full border-gray-300 rounded-md px-4 py-2 mr-2 focus:outline-none focus:border-blue-500" placeholder={`Option ${index + 1}`} />
