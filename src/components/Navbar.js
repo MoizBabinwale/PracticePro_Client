@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { useNavigation } from "../context/NavContext";
 import { AuthContext } from "../context/AuthProvider";
 import { useContext } from "react";
+import { TbLogout } from "react-icons/tb";
 
 function Navbar() {
   const { isNavOpen, toggleNav } = useNavigation();
@@ -59,12 +60,15 @@ function Navbar() {
         )}
         {isLoggedIn ? (
           <>
-            <li className=" Nav-link-tag cursor-pointer text-white" onClick={logout}>
-              Logout
-            </li>
             <Link className="Nav-link-tag" to="/giveTest">
               Give Test
             </Link>
+            <li className=" Nav-link-tag cursor-pointer text-white" onClick={logout}>
+              <span className="flex items-center">
+                {" "}
+                Logout <TbLogout className="ml-1" />
+              </span>
+            </li>
           </>
         ) : (
           <li>

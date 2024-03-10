@@ -261,12 +261,11 @@ const CreateTest = () => {
     <div className={loading ? "blur container " : "container "}>
       {loading && <Loader />}
       <div className="inline-flex flex-wrap mx-4 gap-5 md:max-w-fit">
-        <Button className="bg-none text-black shadow-md border-2 border-blue-300 px-2 py-1" onClick={() => handleOpen("ExamModal")} variant="gradient">
-          New Exam Name
-        </Button>
-
         <Button className="bg-none text-black shadow-md border-2 border-blue-300 px-2 py-1" onClick={() => handleOpen("topic")} variant="gradient">
           New Topic
+        </Button>
+        <Button className="bg-none text-black shadow-md border-2 border-blue-300 px-2 py-1" onClick={() => handleOpen("ExamModal")} variant="gradient">
+          New Exam Name
         </Button>
 
         <Button className="bg-none text-black shadow-md border-2 border-blue-300 px-2 py-1" onClick={() => handleOpen("Time")} variant="gradient">
