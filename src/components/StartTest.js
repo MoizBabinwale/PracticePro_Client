@@ -224,7 +224,7 @@ function StartTest() {
                     </div>
                   ) : (
                     <>
-                      {questions[currentQuestionIndex].text.split(".")[1] === "png" || questions[currentQuestionIndex].text.split(".")[1] === "jpg" || questions[currentQuestionIndex].text.split(".")[1] === "jpeg" ? (
+                      {questions[currentQuestionIndex]?.text.split(".")[1] === "png" || questions[currentQuestionIndex]?.text.split(".")[1] === "jpg" || questions[currentQuestionIndex]?.text.split(".")[1] === "jpeg" ? (
                         <img className="h-[100px] ml-3" height={"100px"} width={"25%"} src={baseUrl + questions[currentQuestionIndex].text} alt="option" />
                       ) : (
                         <p>{questions[currentQuestionIndex]?.text}</p>

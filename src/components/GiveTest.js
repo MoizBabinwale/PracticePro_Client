@@ -32,9 +32,10 @@ function GiveTest() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getAllTest();
+    setLoading(true);
     dispatch(getTimeLimits());
     dispatch(getDifficultyLevel());
+    getAllTest();
   }, []);
   useEffect(() => {
     if (!isPremiumUser) {
@@ -92,6 +93,7 @@ function GiveTest() {
   };
 
   const handleStartTest = () => {
+    setLoading(true);
     if (premiumUser) {
       startDemoTest();
       return;
@@ -120,6 +122,7 @@ function GiveTest() {
     };
 
     localStorage.setItem("testData", JSON.stringify(testData));
+    setLoading(false);
     navigate("/startTest");
   };
 

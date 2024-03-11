@@ -23,21 +23,13 @@ const CreateTest = () => {
   const [testName, setTestName] = useState("");
   const [topicId, setTopicId] = useState("");
   const [topicName, setTopicName] = useState("");
-  const [difficultyId, setDifficultyId] = useState("");
-  const [difficultyName, setDifficultyName] = useState("");
-  const [timeId, setTimeId] = useState("");
-  const [timeName, setTimeName] = useState("");
   const [questions, setQuestions] = useState([]);
   const [topics, setTopics] = useState([]);
   const [listTopics, setListTopics] = useState([]);
-  const [difficulties, setDifficulties] = useState([]);
-  const [times, setTimes] = useState([]);
+  // const [times, setTimes] = useState([]);
   const [testList, setTestList] = useState([]);
-  const [isEditTest, setIsEditTest] = useState(false);
   const [enableEditQuestion, setEnableEditQuestion] = useState(false);
   const [selectedTopics, setSelectedTopics] = useState([]);
-
-  const { isLoggedIn, isAdmin } = useContext(AuthContext);
 
   const handleOpen = (value) => setSize(value);
 
@@ -54,6 +46,8 @@ const CreateTest = () => {
     }
   };
   const getTest = useSelector((state) => state.test);
+
+  // const { isLoggedIn, isAdmin } = useContext(AuthContext);
   useEffect(() => {
     const isLoggedIn = JSON.parse(localStorage.getItem("Profile"));
     if (isLoggedIn) {
@@ -70,9 +64,8 @@ const CreateTest = () => {
 
   useEffect(() => {
     var topics = getTest.subjects.data;
-    var times = getTest.time.allTimeLimit;
+    // var times = getTest.time.allTimeLimit;
 
-    setTimes(times);
     if (topics) {
       setTopics(topics);
     }
@@ -116,22 +109,6 @@ const CreateTest = () => {
     if (value) {
       setTopicId(value._id);
       setTopicName(value.name);
-    }
-  };
-
-  const handleDifficultyChange = (value) => {
-    console.log(value);
-    if (value) {
-      setDifficultyId(value._id);
-      setDifficultyName(value.level);
-    }
-  };
-
-  const handleTimeChange = (value) => {
-    console.log(value);
-    if (value) {
-      setTimeId(value._id);
-      setTimeName(value.time);
     }
   };
 
