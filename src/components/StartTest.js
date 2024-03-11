@@ -49,12 +49,29 @@ function StartTest() {
     }
   }, []);
 
+  const getDemoQuestions = async () => {
+    try {
+      const response = await axios.get(TEST_API + "/getDemoQuestion", testHeaders); // Assuming your endpoint is at '/api/getDemoQuestion'
+      setQuestions(response.data.demoQuestions); // Assuming the response has a 'demoQuestions' property
+    } catch (error) {
+      console.error("Error fetching demo questions:", error);
+    }
+  };
+
   useEffect(() => {
     localStorage.setItem("timeLeft", timeLeft.toString());
   }, [timeLeft]);
 
   useEffect(() => {
     const testInfo = JSON.parse(localStorage.getItem("testData"));
+
+    if (testInfo === "DemoTest") {
+      var demoTestInfo = {
+        testName: "Demo Test",
+      };
+      setTestData(demoTestInfo);
+      return;
+    }
     setTestData(testInfo);
     var testId = testInfo.testId;
     var topicId = testInfo.topicId;
@@ -199,7 +216,23 @@ function StartTest() {
               {/* Display current question and options */}
               <h2>Question {currentQuestionIndex + 1}</h2>
               <div className="h-[500px]">
-                <div>{questions[currentQuestionIndex]?.text}</div>
+                <div>
+                  {questions[currentQuestionIndex]?.text && questions[currentQuestionIndex]?.questionImage ? (
+                    <div>
+                      {questions[currentQuestionIndex]?.text}
+                      <img className="h-[100px] ml-3" height={"100px"} width={"25%"} src={baseUrl + questions[currentQuestionIndex].questionImage} alt="option" />
+                    </div>
+                  ) : (
+                    <>
+                      {questions[currentQuestionIndex].text.split(".")[1] === "png" || questions[currentQuestionIndex].text.split(".")[1] === "jpg" || questions[currentQuestionIndex].text.split(".")[1] === "jpeg" ? (
+                        <img className="h-[100px] ml-3" height={"100px"} width={"25%"} src={baseUrl + questions[currentQuestionIndex].text} alt="option" />
+                      ) : (
+                        <p>{questions[currentQuestionIndex]?.text}</p>
+                      )}
+                    </>
+                  )}
+                </div>
+
                 {/* Display options */}
                 <ul>
                   {questions[currentQuestionIndex]?.options.map((option, index) => (
@@ -242,9 +275,9 @@ function StartTest() {
                 <div className="border rounded-full bg-white w-5 h-5"></div>
                 <span>not-Attempted</span>
               </div>
-              <div className="flex flex-wrap gap-4 p-2">
+              <div className="flex flex-wrap gap-3 p-2" style={{ maxHeight: "400px", overflowY: "auto" }}>
                 {questions.map((item, index) => (
-                  <span className={`p-3 rounded-full border-2 cursor-pointer ${item.selectedOption ? "bg-green-500" : ""} ${index + 1 === currentQuestionIndex + 1 ? "bg-blue-600 text-white" : ""} }`} onClick={() => setQuestionNumber(index)}>
+                  <span className={`p-3 rounded-full border-2 cursor-pointer ${item.selectedOption ? "bg-green-500" : ""} ${index + 1 === currentQuestionIndex + 1 ? "bg-blue-600 text-white" : ""}`} onClick={() => setQuestionNumber(index)} key={index}>
                     {index + 1}
                   </span>
                 ))}

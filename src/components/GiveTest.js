@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { TEST_API } from "../actions/api";
@@ -9,6 +9,7 @@ import { getDifficultyLevel, getTimeLimits, testHeaders } from "../actions/testA
 import manImage from "../assets/man.png";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { AuthContext } from "../context/AuthProvider";
 
 function GiveTest() {
   const [testName, setTestName] = useState("");
@@ -24,6 +25,8 @@ function GiveTest() {
   const [timelist, setTimeList] = useState([]);
   const [timeName, setTimeName] = useState("");
   const [timeId, setTimeId] = useState("");
+  const [premiumUser, setNotPremiumUser] = useState(false);
+  const { isPremiumUser } = useContext(AuthContext);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -33,6 +36,11 @@ function GiveTest() {
     dispatch(getTimeLimits());
     dispatch(getDifficultyLevel());
   }, []);
+  useEffect(() => {
+    if (!isPremiumUser) {
+      setNotPremiumUser(true);
+    }
+  }, [isPremiumUser]);
 
   const getTest = useSelector((state) => state.test);
 
@@ -78,7 +86,16 @@ function GiveTest() {
     setDifficultyId(value._id);
   };
 
+  const startDemoTest = () => {
+    localStorage.setItem("testData", JSON.stringify("DemoTest"));
+    navigate("/startTest");
+  };
+
   const handleStartTest = () => {
+    if (premiumUser) {
+      startDemoTest();
+      return;
+    }
     // Handle starting the test
     var numberOfQuestions = document.getElementById("numberOfQuestions").value;
     if (!numberOfQuestions || !testId || !topicId || !timeId || !difficultyId) {
@@ -141,8 +158,14 @@ function GiveTest() {
           <div className="col-lg-6 p-0">
             <img src={manImage} className="w-full" alt="" />
           </div>
-          <div className="col-lg-6 bg-white pt-10 flex items-center justify-center  flex-col ">
+          <div role="region" aria-disabled="true" className="col-lg-6 bg-white pt-10 flex items-center justify-center  flex-col ">
+            {premiumUser && (
+              <div className="flex justify-start items-start w-[70%]">
+                <p className="text-red-600 items-start justify-start">* Enable Premium To unlock All Feature!</p>
+              </div>
+            )}
             <div className="col-lg-8 my-3">
+              <label>Exam Name</label>
               <Autocomplete
                 onChange={(e, value) => handleTestNameChange(value)}
                 options={testList || []}
@@ -152,10 +175,12 @@ function GiveTest() {
                   testName: testName,
                 }}
                 renderInput={(params) => <TextField {...params} value={testName} variant="standard" placeholder="Select Exam Name" />}
+                disabled={premiumUser}
               />
             </div>
 
             <div className="col-lg-8 my-3">
+              <label>Topics </label>
               <Autocomplete
                 className=""
                 onChange={(e, value) => handleTopicChange(value)}
@@ -166,9 +191,11 @@ function GiveTest() {
                   name: topicName,
                 }}
                 renderInput={(params) => <TextField {...params} value={topicName} variant="standard" placeholder="Select Topic" />}
+                disabled={premiumUser}
               />
             </div>
             <div className="col-lg-8 my-3">
+              <label>Time</label>
               <Autocomplete
                 className=""
                 onChange={(e, value) => handleTimeChange(value)}
@@ -179,14 +206,16 @@ function GiveTest() {
                   time: timeName,
                 }}
                 renderInput={(params) => <TextField {...params} value={timeName} variant="standard" placeholder="Select Time" />}
+                disabled={premiumUser}
               />
             </div>
             {/* <TextField type="number" value={time} onChange={handleTimeChange} label="Time (in minutes)" variant="standard" placeholder="Enter Time" /> */}
             <div className="col-lg-8 my-3">
-              <TextField type="number" className="w-full" min="1" id="numberOfQuestions" onKeyDown={handleNumQuestionsChange} label="Number of Questions" variant="standard" placeholder="Enter Number of Questions" />
+              <TextField type="number" className="w-full" min="1" id="numberOfQuestions" disabled={premiumUser} onKeyDown={handleNumQuestionsChange} label="Number of Questions" variant="standard" placeholder="Enter Number of Questions" />
             </div>
 
             <div className="col-lg-8 my-3">
+              <label>Difficulty</label>
               <Autocomplete
                 onChange={(e, value) => handleDifficultyLevelChange(value)}
                 options={difficulties || []}
@@ -196,10 +225,11 @@ function GiveTest() {
                   level: difficultyName,
                 }}
                 renderInput={(params) => <TextField {...params} variant="standard" placeholder="Select Difficulty Level" />}
+                disabled={premiumUser}
               />
             </div>
             <button className="flex-end bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" onClick={() => handleStartTest()}>
-              Start Test
+              {premiumUser ? "Start Demo Test" : "Start Test"}
             </button>
           </div>
         </div>

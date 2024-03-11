@@ -1,13 +1,16 @@
-import React, { useDebugValue, useEffect, useState } from "react";
+import React, { useContext, useDebugValue, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { resetResult } from "../actions/testAction";
 import axios from "axios";
 import { TEST_API } from "../actions/api";
-// import { useDispatch, useSelector } from "react-redux";
+
+import { AuthContext } from "../context/AuthProvider";
 function Home() {
   // const { isNavOpen } = useNavigation();
   const [testData, setTestData] = useState([]);
+
+  const { isPremiumUser } = useContext(AuthContext);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(resetResult());
@@ -53,19 +56,20 @@ function Home() {
                   <p className="mb-4 md:mb-3 text-16 text-888">Mocks (MHCET – 30 | CMAT – 12 ) Sectionals (MHCET – 40 | CMAT – 15) Area Tests ( MHCET – 100 | CMAT – 60) 80+ E-books with Solved Examples for MHCET</p>
                   <p className="mb-0 text-14 text-f49"></p>
                 </div>
-                <div className="popular-card__footer !mt-auto" style={{ padding: "14px 30px 40px" }}>
-                  <div className="flex items-center flex-wrap mb-3 md:pb-1">
-                    <h4 className="mb-0 inline-block text-22 text-f49 font-semibold">Rs.2800/-</h4>
-                    <span className="text-sm text-888 ml-2">Customizable</span>
+                {!isPremiumUser && (
+                  <div className="popular-card__footer !mt-auto" style={{ padding: "14px 30px 40px" }}>
+                    <div className="flex items-center flex-wrap mb-3 md:pb-1">
+                      <h4 className="mb-0 inline-block text-22 text-f49 font-semibold">Rs.2800/-</h4>
+                      <span className="text-sm text-888 ml-2">Customizable</span>
+                    </div>
+
+                    <div className="flex md:justify-between clearfix card-btn md:mx-[-5px]">
+                      <Link to="/buyPremium">
+                        <a className="float-left rounded-md border-[#4a398d] cursor-pointer text-white items-center font-normal uppercase px-3 py-2 bg-[#4a398d]    md:ml-auto md:float-left ml-auto mr-auto">personalize &amp; buy</a>
+                      </Link>
+                    </div>
                   </div>
-                  <div className="flex md:justify-between clearfix card-btn md:mx-[-5px]">
-                    <Link to="/buyPremium">
-                      <a target="_blank" className="float-left rounded-md border-[#4a398d] cursor-pointer text-white items-center font-normal uppercase px-3 py-2 bg-[#4a398d]    md:ml-auto md:float-left ml-auto mr-auto">
-                        personalize &amp; buy
-                      </a>
-                    </Link>
-                  </div>
-                </div>
+                )}
               </div>
             </div>
             {testData.map((item, index) => (
@@ -83,19 +87,20 @@ function Home() {
                     </div>
                     <p className="mb-0 text-14 text-f49"></p>
                   </div>
-                  <div className="popular-card__footer !mt-auto" style={{ padding: "14px 30px 40px" }}>
-                    <div className="flex items-center flex-wrap mb-3 md:pb-1">
-                      <h4 className="mb-0 inline-block text-22 text-f49 font-semibold">Rs.2800/-</h4>
-                      <span className="text-sm text-888 ml-2">Customizable</span>
+                  {!isPremiumUser && (
+                    <div className="popular-card__footer !mt-auto" style={{ padding: "14px 30px 40px" }}>
+                      <div className="flex items-center flex-wrap mb-3 md:pb-1">
+                        <h4 className="mb-0 inline-block text-22 text-f49 font-semibold">Rs.2800/-</h4>
+                        <span className="text-sm text-888 ml-2">Customizable</span>
+                      </div>
+
+                      <div className="flex md:justify-between clearfix card-btn md:mx-[-5px]">
+                        <Link to="/buyPremium">
+                          <a className="float-left rounded-md border-[#4a398d] cursor-pointer text-white items-center font-normal uppercase px-3 py-2 bg-[#4a398d]    md:ml-auto md:float-left ml-auto mr-auto">personalize &amp; buy</a>
+                        </Link>
+                      </div>
                     </div>
-                    <div className="flex md:justify-between clearfix card-btn md:mx-[-5px]">
-                      <Link to="/buyPremium">
-                        <a target="_blank" className="float-left rounded-md border-[#4a398d] cursor-pointer text-white items-center font-normal uppercase px-3 py-2 bg-[#4a398d]    md:ml-auto md:float-left ml-auto mr-auto">
-                          personalize &amp; buy
-                        </a>
-                      </Link>
-                    </div>
-                  </div>
+                  )}
                 </div>
               </div>
             ))}

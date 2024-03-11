@@ -11,10 +11,11 @@ import { MdDelete } from "react-icons/md";
 
 const AddQuestions = ({ testId, topicId, testData, getAllQuestions }) => {
   const [questionTitle, setQuestionTitle] = useState("");
+  const [questionImage, setQuestionImage] = useState({});
   const [quesionCreated, setQuesionCreated] = useState(false);
   const [enableQuestions, setEnableQuestions] = useState(false);
   const [uploadedImages, setUploadedImages] = useState([]);
-  const [questionWithImage, setQuestionWithImage] = useState(false);
+  const [questionWithImage, setQuestionWithImage] = useState("1");
 
   const [difficultyId, setDifficultyId] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState("");
@@ -42,7 +43,7 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions }) => {
   const handleImageChange = (event, index) => {
     const file = event.target.files[0];
     const updatedImages = [...uploadedImages];
-    updatedImages[index] = file;
+    updatedImages[index + 1] = file;
     setUploadedImages(updatedImages);
   };
 
@@ -68,7 +69,7 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions }) => {
     }
   }, [getTest]);
 
-  const handleImageQuestion = async () => {
+  const handleImageOptionQue = async () => {
     try {
       const images = [...uploadedImages];
       if (images.length <= 3) {
@@ -107,15 +108,6 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions }) => {
 
       const formData = new FormData();
 
-      // const payload = {
-      //   text: questionTitle,
-      //   options: newOptions, // Filter out empty options
-      //   subjectId: topicId,
-      //   difficultyLevel: selectedDifficulty,
-      //   testId: testId,
-      //   avatar: images,
-      // };
-      console.log("images ", images);
       images.forEach((file, index) => {
         formData.append(`avatar[]`, file);
       });
@@ -127,9 +119,12 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions }) => {
 
       const response = await axios.post(TEST_API + "/createQuestionWithImage", formData, { headers: { ...testHeaders.headers, "Content-Type": "multipart/form-data" } });
       if (response) {
-        console.log(response);
         toast.success("Question Created Successfully!");
         document.getElementById("ask-ques-title").value = "";
+        document.getElementById("inputQuestionImage").value = "";
+        for (let i = 0; i < 4; i++) {
+          document.getElementById(`optionFile_${i}`).value = "";
+        }
         setOptions([
           { text: "", isCorrect: false },
           { text: "", isCorrect: false },
@@ -147,7 +142,7 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions }) => {
     try {
       const newOptions = [...options];
       // Send data to backend API
-      if (!questionWithImage) {
+      if (questionWithImage === "1") {
         for (const i in newOptions) {
           if (newOptions[i].text === "") {
             Swal.fire({
@@ -274,25 +269,37 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions }) => {
   };
 
   const handleDeleteButton = async (ID) => {
-    try {
-      const response = await axios.post(TEST_API + "/deleteQeustions", { _id: ID }, testHeaders);
-      if (response) {
-        toast.success("Question Deleated Successfully!");
-        // getAllQuestions();
+    Swal.fire({
+      title: "Are you sure you want to delete the question?",
+      text: "This action cannot be undone!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await axios.post(TEST_API + "/deleteQeustions", { _id: ID }, testHeaders);
+          if (response) {
+            toast.success("Question Deleated Successfully!");
+            getAllQuestions();
+          }
+        } catch (error) {
+          console.log("error ", error);
+        }
+        Swal.fire("Deleted!", "Your question has been deleted.", "success");
       }
-    } catch (error) {
-      console.log("error ", error);
-    }
+    });
   };
 
   const handleChnageQuestionType = (e) => {
-    console.log("e.target.value", e.target.value);
-    if (e.target.value === "1") {
-      setQuestionWithImage(false);
-    } else {
-      setQuestionWithImage(true);
+    setQuestionWithImage(e.target.value);
+    var question = document.getElementById("ask-ques-title");
+    if (question) {
+      question.value = "";
     }
-    document.getElementById("ask-ques-title").value = "";
     setOptions([
       { text: "", isCorrect: false },
       { text: "", isCorrect: false },
@@ -303,6 +310,88 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions }) => {
     setSelectedDifficulty("");
   };
 
+  const handleUploadImageQue = async () => {
+    try {
+      if (!questionImage) {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Upload Question image!",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        return;
+      }
+      const newOptions = [...options];
+
+      if (!newOptions.some((option) => option.isCorrect)) {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Select Correct Answer",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        return;
+      }
+
+      if (!selectedDifficulty) {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Select Difficulty or Enter Question ",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        return;
+      }
+      const formData = new FormData();
+      formData.append("questionImage", questionImage);
+      formData.append("options", JSON.stringify(newOptions));
+      formData.append("subjectId", topicId);
+      formData.append("difficultyLevel", selectedDifficulty);
+      formData.append("testId", testId);
+
+      const response = await axios.post(TEST_API + "/createQuestionImage", formData, { headers: { ...testHeaders.headers, "Content-Type": "multipart/form-data" } });
+      if (response) {
+        toast.success("Question Created Successfully!");
+        document.getElementById("inputQuestionImage").value = "";
+        setOptions([
+          { text: "", isCorrect: false },
+          { text: "", isCorrect: false },
+          { text: "", isCorrect: false },
+          { text: "", isCorrect: false },
+        ]);
+        setQuestionImage({});
+        setSelectedDifficulty("");
+      }
+    } catch (error) {
+      console.log("error ", error);
+    }
+  };
+
+  const handleuploadQuestion = () => {
+    if (questionWithImage === "1") {
+      handleNext();
+    } else if (questionWithImage === "2") {
+      handleImageOptionQue();
+    } else if (questionWithImage === "3") {
+      handleUploadImageQue();
+    }
+  };
+
+  const handleQuestionTitleChange = (e, index) => {
+    const question = [...questionsData];
+    question.map((question, i) => {
+      if (index === i) {
+        return {
+          ...question,
+          text: e.target.value,
+        };
+      }
+    });
+    setQuestionData(question);
+  };
   return (
     <div className="mx-5 flex flex-col" style={{ width: "100%" }}>
       <div className="ask-ques-container">
@@ -312,20 +401,48 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions }) => {
             <label htmlFor="ask-ques-title">
               <h4>Your Question </h4>
               <p>Be specific with question </p>
-              <input
-                type="text"
-                id="ask-ques-title"
-                onChange={(e) => {
-                  setQuestionTitle(e.target.value);
-                }}
-                placeholder="e.g. Is there an R function for finding the index of an element in a vector?"
-              />
+              {questionWithImage === "1" && (
+                <input
+                  type="text"
+                  id="ask-ques-title"
+                  onChange={(e) => {
+                    setQuestionTitle(e.target.value);
+                  }}
+                  placeholder="e.g. Is there an R function for finding the index of an element in a vector?"
+                />
+              )}
+              {questionWithImage === "2" && (
+                <div className="flex col-lg-12 ">
+                  <input
+                    className="custom-input-width"
+                    type="text"
+                    id="ask-ques-title"
+                    onChange={(e) => {
+                      setQuestionTitle(e.target.value);
+                    }}
+                    placeholder="e.g. Is there an R function for finding the index of an element in a vector?"
+                  />
+                  <input
+                    type="file"
+                    id="inputQuestionImage"
+                    onChange={(e) => {
+                      const newUploadedImages = [e.target.files[0], ...uploadedImages.slice(1)];
+                      setUploadedImages(newUploadedImages);
+                    }}
+                  />
+                </div>
+              )}
+              {questionWithImage === "3" && (
+                <>
+                  <input type="file" id="inputQuestionImage" onChange={(e) => setQuestionImage(e.target.files[0])} />
+                </>
+              )}
             </label>
             <div className="mb-4">
               <label htmlFor="options" className="block mb-2">
                 Options
               </label>
-              {!questionWithImage ? (
+              {questionWithImage === "1" || questionWithImage === "3" ? (
                 <>
                   {options.map((option, index) => (
                     <div key={index} className="flex items-center mb-2">
@@ -340,16 +457,16 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions }) => {
               ) : (
                 <>
                   {options.map((option, index) => (
-                    <div key={index} className="flex items-center mb-2">
+                    <div key={index + 1} className="flex items-center mb-2">
                       <div>
-                        <input type="file" onChange={(e) => handleImageChange(e, index)} />
+                        <input type="file" id={`optionFile_${index}`} onChange={(e) => handleImageChange(e, index)} />
                         <label className="inline-flex items-center cursor-pointer">
                           <input type="radio" name="correctAnswer" checked={option.isCorrect} onChange={() => handleCorrectChange(index)} className="form-radio h-5 w-5 text-blue-500" />
                           <span className="ml-2">Correct</span>
                         </label>
                       </div>
                       <br />
-                      {uploadedImages[index] && <img src={URL.createObjectURL(uploadedImages[index] ? uploadedImages[index] : "")} alt={`Option ${index + 1}`} style={{ maxWidth: "100px" }} />}
+                      {uploadedImages[index + 1] && <img src={URL.createObjectURL(uploadedImages[index + 1])} alt={`Option ${index + 1}`} style={{ maxWidth: "100px" }} />}
                       <br />
                     </div>
                   ))}
@@ -376,10 +493,11 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions }) => {
                 </ul>
                 <select className="p-2 appearance-none border rounded-lg w-full focus:outline-none focus:border-blue-500" onChange={(e) => handleChnageQuestionType(e)}>
                   <option value={1}>Question With Text</option>
-                  <option value={2}>Question With Images</option>
+                  <option value={2}>Question With Text and Options with Images</option>
+                  <option value={3}>Question With Images Options with Text</option>
                 </select>
               </div>
-              <button type="button" onClick={!questionWithImage ? handleNext : handleImageQuestion} className=" btn-sm bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+              <button type="button" onClick={handleuploadQuestion} className=" btn-sm bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
                 Next
               </button>
             </div>
@@ -401,10 +519,22 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions }) => {
                   {key + 1}
                   {")"}
                 </span>
-                <input className="ml-3  " value={item.text} placeholder="Enter your question" />
+                {!item.text.includes("uploads") ? (
+                  <input className="ml-3 w-[200px] md:w-auto" defaultValue={item.text} onChange={(e) => handleQuestionTitleChange(e, key)} placeholder="Enter your question" />
+                ) : (
+                  <div className="w-[25%] h-40 mb-2 ml-4">
+                    <img className="w-full h-full object-contain items-start" src={baseUrl + item.text} alt="Placeholder Image" />
+                  </div>
+                )}
+
+                {item.questionImage && (
+                  <div className="w-[25%] h-40 mb-2 ml-4">
+                    <img className="w-full h-full object-contain items-start" src={baseUrl + item.questionImage} />
+                  </div>
+                )}
               </div>
               {item.options.map((option, index) => (
-                <div key={index} className="flex items-center mb-2">
+                <div key={index} className="flex items-center mb-2 ">
                   <span> {String.fromCharCode(65 + index)}</span>
                   {option.text.split(".")[1] === "png" || option.text.split(".")[1] === "jpg" || option.text.split(".")[1] === "jpeg" ? (
                     <div className="w-full h-[100px]">
@@ -437,11 +567,9 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions }) => {
                     </li>
                   ))}
                 </ul>
-                {item.optionType === "image" && (
-                  <button className="text-red-700" onClick={() => handleDeleteButton(item._id)}>
-                    <MdDelete />
-                  </button>
-                )}
+                <button className="text-red-700" onClick={() => handleDeleteButton(item._id)}>
+                  <MdDelete />
+                </button>
               </div>
             </div>
           </div>

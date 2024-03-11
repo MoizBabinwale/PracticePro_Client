@@ -57,21 +57,11 @@ function BuyPremiumPage() {
 
   const handlePayment = async (amount, subscribefor) => {
     setLoading2(true);
-    // axios
-    //   .post(API + "/create-order", { ...form, amount, token, subscribefor })
-    //   .then((res) => {
-    //     setLoading2(false);
-    //     window.open(res.data, "_blank");
-    //   })
-    //   .catch((error) => {
-    //     setLoading2(false);
-    //     console.error(error);
-    //   });
     try {
       const stripe = await loadStripe("pk_test_51Mp63RSDzlYEZ1IK3gFPXR9sRtTUdFcwnl3gPDjDVQMwmpJukD608F6od3NcFCbfWgVqiwO4ma1G6CBJ8ly6aM3L00M78rC6T3");
+      // const stripe = await loadStripe("pk_test_51Mp63RSDzlYEZ1IK3gFPXR9sRtTUdFcwnl3gPDjDVQMwmpJukD608F6od3NcFCbfWgVqiwO4ma1G6CBJ8ly6aM3L00M78rC6T3");
       const response = await axios.post(API + "/create-order", { ...form, amount, subscribefor });
       if (response) {
-        console.log("res", response);
         const result = stripe.redirectToCheckout({
           sessionId: response.data.id,
         });

@@ -55,7 +55,8 @@ const CreateTest = () => {
   };
   const getTest = useSelector((state) => state.test);
   useEffect(() => {
-    if (isLoggedIn && isAdmin) {
+    const isLoggedIn = JSON.parse(localStorage.getItem("Profile"));
+    if (isLoggedIn) {
       setLoading(true);
       dispatch(getAllSubjects());
       dispatch(getDifficultyLevel());
