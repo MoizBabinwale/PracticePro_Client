@@ -43,7 +43,6 @@ function Login() {
     }
     if (signupState.responseData) {
       const response = signupState.responseData;
-      console.log("signupState.responseData ", response.responseData.response.data.message);
       if (response.responseData.message === "Email Sent successfully") {
         Swal.fire({
           position: "center",
