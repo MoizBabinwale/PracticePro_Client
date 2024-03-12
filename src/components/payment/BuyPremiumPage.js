@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthProvider";
 import { loadStripe } from "@stripe/stripe-js";
 import Loader from "../Loader";
+import Swal from "sweetalert2";
 
 function BuyPremiumPage() {
   const [token, setToken] = useState("");
@@ -16,7 +17,15 @@ function BuyPremiumPage() {
   useEffect(() => {
     var userData = JSON.parse(localStorage.getItem("Profile"));
     if (!userData) {
+      Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "Please login to Buy Premium!",
+        showConfirmButton: false,
+        timer: 2000,
+      });
       navigate("/");
+      return;
     } else if (!isPremiumUser) {
       const userInfo = userData.data;
       var formData = {

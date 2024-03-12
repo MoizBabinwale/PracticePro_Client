@@ -2,7 +2,7 @@ import React, { createContext, useState, useEffect } from "react";
 
 import Swal from "sweetalert2";
 import { logoutAction } from "../actions/action";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const AuthContext = createContext();
 
@@ -12,10 +12,11 @@ const AuthProvider = ({ children }) => {
   const [isSessionExpired, setIsSessionExpired] = useState(false);
   const [isPremiumUser, setIsPremiumUser] = useState(false);
 
+  const loginState = useSelector((state) => state.login);
   useEffect(() => {
     // Check if user is logged in or session is expired on component mount
     checkLoggedIn();
-  }, []);
+  }, [loginState]);
 
   const checkLoggedIn = () => {
     const profile = JSON.parse(localStorage.getItem("Profile"));
