@@ -24,8 +24,9 @@ export const signUpSuccess = (responseData) => ({
 export const signUpRequest = () => ({
   type: SIGNUPREQUEST,
 });
-export const signUpFail = () => ({
+export const signUpFail = (responseData) => ({
   type: SIGNUPFAIL,
+  payload: { responseData },
 });
 
 export const fetchAllUsers = (responseData) => ({
@@ -96,7 +97,7 @@ export const singUp = (name, userEmail, password, phone) => {
       }
     } catch (error) {
       // Handle error and dispatch failure action
-      dispatch(signUpFail());
+      dispatch(signUpFail(error));
     }
   };
 };

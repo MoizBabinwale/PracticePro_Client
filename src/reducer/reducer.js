@@ -55,6 +55,7 @@ const signupReducer = (state = initialSingupState, action) => {
         ...state,
         isLoading: false,
         isSignup: false,
+        responseData: action.payload,
       };
     default:
       return state;

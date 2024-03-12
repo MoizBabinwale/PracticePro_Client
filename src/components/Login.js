@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import { AuthContext } from "../context/AuthProvider";
 import { API } from "../actions/api";
 import axios from "axios";
+import Loader from "./Loader";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -42,20 +43,29 @@ function Login() {
     }
     if (signupState.responseData) {
       const response = signupState.responseData;
-      if (signupState.responseData) {
-        const response = signupState.responseData;
-        if (response.responseData.message === "Email Sent successfully") {
-          Swal.fire({
-            position: "center",
-            icon: "success",
-            title: "Email Sent Please Verify Your Email!",
-            showConfirmButton: false,
-            timer: 2000,
-          });
-          setTimeout(() => {
-            setVerfiyEmail(true);
-          }, 2000);
-        }
+      console.log("signupState.responseData ", response.responseData.response.data.message);
+      if (response.responseData.message === "Email Sent successfully") {
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Email Sent Please Verify Your Email!",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        setTimeout(() => {
+          setIsLoading(false);
+          setVerfiyEmail(true);
+        }, 2000);
+      } else if (response.responseData.response.data.message === "User Alredy Exist") {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "User Alredy Exist",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        setIsLoading(false);
+        return;
       }
     }
   }, [loginState, signupState]);
@@ -66,6 +76,7 @@ function Login() {
     if (isSignup) {
       dispatch(login(email, password, authContext));
     } else {
+      setIsLoading(true);
       if (phone.length === 10 && emailRegex.test(email)) {
         dispatch(singUp(userName, email, password, phone));
       } else {
@@ -156,9 +167,10 @@ function Login() {
                 <AiOutlineEyeInvisible onClick={() => setSeenPass(!seenPass)} style={{ backgroundColor: "transparent", position: "relative", top: "-30px", left: "92%", borderRadius: "25%", fontSize: "larger" }} />
               )}
             </div>
-            <button type="button" className="btn w-full text-white items-center justify-center font-semibold bg-blue-700 hover:bg-blue-800" onClick={handleSubmit} style={{ display: "flex", alignItems: "center" }}>
+            <button type="button" disabled={isLoading} className="btn w-full text-white items-center justify-center font-semibold bg-blue-700 hover:bg-blue-800" onClick={handleSubmit} style={{ display: "flex", alignItems: "center" }}>
               {isSignup ? "Login" : "SignUp"}
               {loginState.isLoading && <Rings height="20" width="50" color="white" radius="6" wrapperStyle={{ marginLeft: "10px" }} wrapperclassName="" visible={true} ariaLabel="rings-loading" />}
+              {isLoading && <Loader />}
             </button>
             <div className="w-100" style={{ cursor: "pointer" }}>
               <p onClick={togglePage} className="text-black mt-2">
