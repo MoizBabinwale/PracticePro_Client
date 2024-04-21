@@ -105,7 +105,6 @@ const CreateTest = () => {
   };
 
   const handleTopicChange = (value) => {
-    console.log(value);
     if (value) {
       setTopicId(value._id);
       setTopicName(value.name);
@@ -392,8 +391,8 @@ const CreateTest = () => {
                 {topics.map((topic, index) => (
                   <li key={index} className="dropdown-item">
                     <label className="flex cursor-pointer">
-                      <input type="checkbox" id={`topic_${topic._id}`} value={topic._id} checked={selectedTopics.includes(topic._id)} onChange={() => TopicChange(topic._id)} />
-                      <p className="ml-2">{topic.name}</p>
+                      <input type="checkbox" id={`topic_${topic?._id}`} value={topic?._id} checked={selectedTopics.includes(topic?._id)} onChange={() => TopicChange(topic?._id)} />
+                      <p className="ml-2">{topic?.name}</p>
                     </label>
                   </li>
                 ))}
