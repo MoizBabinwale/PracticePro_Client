@@ -46,7 +46,6 @@ function GiveTest() {
   const getTest = useSelector((state) => state.test);
 
   useEffect(() => {
-    console.log("getTest ", getTest);
     var difficulties = getTest.difficulties.difficultyLevels;
     var timelimits = getTest.time.allTimeLimit;
     if (difficulties) {

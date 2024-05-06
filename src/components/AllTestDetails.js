@@ -30,7 +30,6 @@ function AllTestDetails() {
       const response = await axios.get(TEST_API + "/getAllResult", testHeaders);
 
       if (response) {
-        console.log("res", response.data);
         setResult(response.data.results);
         setLoading(false);
       }

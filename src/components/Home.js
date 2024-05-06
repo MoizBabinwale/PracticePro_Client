@@ -21,7 +21,6 @@ function Home() {
     try {
       const response = await axios.get(TEST_API + "/getAllTest"); // Await the axios request
       if (response) {
-        console.log("res", response);
         setTestData(response.data.Tests);
       }
     } catch (error) {

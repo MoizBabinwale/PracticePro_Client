@@ -13,7 +13,6 @@ const Failure = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const userDataString = urlParams.get("userData");
     const userData = JSON.parse(userDataString);
-    console.log("iser", userData);
     try {
       const response = await axios.post(
         API + "/resetUserData",

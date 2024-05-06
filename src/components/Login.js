@@ -28,7 +28,6 @@ function Login() {
 
   useEffect(() => {
     var profile = JSON.parse(localStorage.getItem("Profile"));
-    console.log("loginState ", loginState);
     if (loginState.isLoggedIn || profile) {
       Swal.fire({
         position: "center",

@@ -268,12 +268,18 @@ function StartTest() {
             <div style={{ flex: 1 }}>
               <p className="text-red-500">*Note Please Do Not Reload/Change the Page while Test is in progress</p>
               <div className="flex flex-wrap gap-3 item-center">
-                <div className="border-2 rounded-full bg-green-500 w-5 h-5"></div>
-                <span>attempted</span>
-                <div className="border rounded-full bg-blue-600 w-5 h-5"></div>
-                <span>current Question</span>&nbsp;&nbsp;
-                <div className="border rounded-full bg-white w-5 h-5"></div>
-                <span>not-Attempted</span>
+                <div className="flex  items-center	">
+                  <div className="border-2 rounded-full bg-green-500 w-5 h-5 mr-2"></div>
+                  <span>attempted</span>
+                </div>
+                <div className="flex items-center	">
+                  <div className="border rounded-full bg-blue-600 w-5 h-5  mr-2"></div>
+                  <span>current Question</span>&nbsp;&nbsp;
+                </div>
+                <div className="flex items-center	">
+                  <div className="border rounded-full bg-white w-5 h-5  mr-2"></div>
+                  <span>not-Attempted</span>
+                </div>
               </div>
               <div className="flex flex-wrap gap-3 p-2" style={{ maxHeight: "400px", overflowY: "auto" }}>
                 {questions.map((item, index) => (

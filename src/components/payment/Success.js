@@ -5,7 +5,6 @@ const Success = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const userDataString = urlParams.get("userData");
     const userData = JSON.parse(userDataString);
-    console.log("iser", userData);
     const profile = JSON.parse(localStorage.getItem("Profile"));
     profile.data = userData;
     localStorage.setItem("Profile", JSON.stringify(profile));
