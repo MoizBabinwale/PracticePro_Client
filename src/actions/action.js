@@ -117,3 +117,26 @@ export const getAllUser = () => {
 export const logoutAction = () => ({
   type: "LOGOUT",
 });
+
+export const changeUserStatus = async () => {
+  try {
+    const user = JSON.parse(localStorage.getItem("Profile"));
+    const subscribeFor = localStorage.getItem("subscriptionFor");
+    const id = user?.data?._id;
+    console.log("id ", id);
+    const response = await axios.post(
+      API + "/updateUserSubscription",
+      { id, subscribeFor },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    ); // Await the axios request
+    if (response) {
+      return response.data;
+    }
+  } catch (error) {
+    console.log("error ", error);
+  }
+};

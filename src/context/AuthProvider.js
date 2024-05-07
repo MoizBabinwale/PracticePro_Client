@@ -11,6 +11,7 @@ const AuthProvider = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isSessionExpired, setIsSessionExpired] = useState(false);
   const [isPremiumUser, setIsPremiumUser] = useState(false);
+  const [subscribtionSelected, setSubscriptionSelected] = useState("");
 
   const loginState = useSelector((state) => state.login);
   useEffect(() => {
@@ -20,7 +21,7 @@ const AuthProvider = ({ children }) => {
 
   const checkLoggedIn = () => {
     const profile = JSON.parse(localStorage.getItem("Profile"));
-    if (profile) {
+    if (profile?.data) {
       const isAdminstatus = profile.data.isAdmin;
       setIsAdmin(isAdminstatus);
       const token = profile.token;
@@ -85,6 +86,8 @@ const AuthProvider = ({ children }) => {
         setIsAdmin,
         logout,
         checkLoggedIn,
+        subscribtionSelected,
+        setSubscriptionSelected,
       }}
     >
       {children}

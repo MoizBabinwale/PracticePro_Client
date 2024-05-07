@@ -1,14 +1,27 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import { AuthContext } from "../../context/AuthProvider";
+import { changeUserStatus } from "../../actions/action";
 
 const Success = () => {
+  const seachQuery = useSearchParams()[0];
+
+  const { subscribtionSelected } = useContext(AuthContext);
+  const referenceNum = seachQuery.get("reference");
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const userDataString = urlParams.get("userData");
-    const userData = JSON.parse(userDataString);
-    const profile = JSON.parse(localStorage.getItem("Profile"));
-    profile.data = userData;
-    localStorage.setItem("Profile", JSON.stringify(profile));
+    updateUser();
   }, []);
+
+  const updateUser = async () => {
+    try {
+      const res = await changeUserStatus();
+      if (res) {
+        localStorage.clear();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="container">
@@ -16,6 +29,7 @@ const Success = () => {
         <div className="col-md-6 text-center">
           <div className="alert alert-success text-center">
             <h4 className="alert-heading">Payment Successfull</h4>
+            Reference No.{referenceNum}
           </div>
           <a href="/">Back To Home </a>
         </div>

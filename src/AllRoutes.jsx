@@ -20,7 +20,7 @@ const AllRoutes = () => {
       <Route path="/createTest" element={<CreateTest />} />
       <Route path="/viewAllTest" element={<AllTestDetails />} />
       <Route path="/addQuestion" element={<AddQuestions />} />
-      <Route exact path="/success" element={<Success />} />
+      <Route path="/paymentsuccess" element={<Success />} />
       <Route exact path="/cancel" element={<Failure />} />
       <Route exact path="/giveTest" element={<GiveTest />} />
       <Route exact path="/startTest" element={<StartTest />} />

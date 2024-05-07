@@ -12,7 +12,7 @@ function BuyPremiumPage() {
   const [form, setForm] = useState({ amount: "", name: "", email: "", phone: "", subscribefor: "" });
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(false);
-  const { isPremiumUser } = useContext(AuthContext);
+  const { isPremiumUser, setSubscriptionSelected } = useContext(AuthContext);
   const navigate = useNavigate();
   useEffect(() => {
     var userData = JSON.parse(localStorage.getItem("Profile"));
@@ -57,7 +57,9 @@ function BuyPremiumPage() {
       amount: amount,
       subscribefor: subscribefor,
     }));
-    handlePayment(amount, subscribefor);
+    localStorage.setItem("subscriptionFor", subscribefor);
+    setSubscriptionSelected(subscribefor);
+    checkoutHandler(amount);
     //   setLoading(false);
     // } catch (error) {
     //   console.log("error ", error);
@@ -65,25 +67,41 @@ function BuyPremiumPage() {
     // }
   };
 
-  const handlePayment = async (amount, subscribefor) => {
-    try {
-      const stripe = await loadStripe("pk_test_51Mp63RSDzlYEZ1IK3gFPXR9sRtTUdFcwnl3gPDjDVQMwmpJukD608F6od3NcFCbfWgVqiwO4ma1G6CBJ8ly6aM3L00M78rC6T3");
-      // const stripe = await loadStripe("pk_test_51Mp63RSDzlYEZ1IK3gFPXR9sRtTUdFcwnl3gPDjDVQMwmpJukD608F6od3NcFCbfWgVqiwO4ma1G6CBJ8ly6aM3L00M78rC6T3");
-      const response = await axios.post(API + "/create-order", { ...form, amount, subscribefor });
-      if (response) {
-        setLoading(false);
-        const result = stripe.redirectToCheckout({
-          sessionId: response.data.id,
-        });
-        // localStorage.removeItem("Profile")
-        // localStorage.setItem("Profile",response.updatedUserData.)
-        if (result.error) {
-          console.log(result.error);
-        }
-      }
-    } catch (error) {
-      console.log("error ", error);
-    }
+  const checkoutHandler = async (amount) => {
+    const {
+      data: { key },
+    } = await axios.get("http://www.localhost:4000/api/getkey");
+
+    const {
+      data: { order },
+    } = await axios.post("http://localhost:4000/api/checkout", {
+      amount,
+    });
+    console.log("key ", key);
+    console.log("order ", order);
+    const options = {
+      key,
+      amount: order.amount,
+      currency: "INR",
+      name: "6 Pack Programmer",
+      description: "Tutorial of RazorPay",
+      image: "https://avatars.githubusercontent.com/u/25058652?v=4",
+      order_id: order.id,
+      callback_url: "http://localhost:4000/api/paymentverification",
+      prefill: {
+        name: "Gaurav Kumar",
+        email: "gaurav.kumar@example.com",
+        contact: "9999999999",
+      },
+      notes: {
+        address: "Razorpay Corporate Office",
+      },
+      theme: {
+        color: "#121212",
+      },
+    };
+    const razor = new window.Razorpay(options);
+    razor.open();
   };
 
   return (
@@ -95,7 +113,9 @@ function BuyPremiumPage() {
           <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
             <div className="mx-auto max-w-screen-md text-center mb-8 lg:mb-12">
               <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Designed for business teams like yours</h2>
-              <p className="mb-5 font-light text-gray-500 sm:text-xl dark:text-gray-400">Here at Flowbite we focus on markets where technology, innovation, and capital can unlock long-term value and drive economic growth.</p>
+              <p className="mb-5 font-light text-gray-500 sm:text-xl dark:text-gray-400">
+                Here at Flowbite we focus on markets where technology, innovation, and capital can unlock long-term value and drive economic growth.
+              </p>
             </div>
             <div className="space-y-8 lg:grid lg:grid-cols-3 sm:gap-6 xl:gap-10 lg:space-y-0">
               <div className="flex flex-col p-6 mx-auto max-w-lg text-center text-gray-900 bg-white rounded-lg border border-gray-100 shadow dark:border-gray-600 xl:p-8 dark:bg-gray-800 dark:text-white">
