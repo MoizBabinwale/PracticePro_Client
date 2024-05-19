@@ -17,19 +17,20 @@ const initialSingupState = {
 const loginReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOGIN_REQUEST:
-      return { ...state, isLoading: true };
+      return { ...state, isLoading: true, isLoginFail: false };
     case LOGIN_SUCCESS:
       localStorage.setItem("Profile", JSON.stringify({ ...action.payload.responseData.data }));
       return {
         ...state,
         isLoading: false,
         isLoggedIn: true,
+        isLoginFail: false,
         responseData: action.payload.responseData,
       };
     case LOGIN_FAILURE:
-      return { ...state, isLoading: false };
+      return { ...state, isLoginFail: true, isLoading: false };
     case "LOGOUT":
-      return { ...state, isLoggedIn: false, responseData: {} };
+      return { ...state, isLoginFail: false, isLoggedIn: false, responseData: {} };
     default:
       return state;
   }

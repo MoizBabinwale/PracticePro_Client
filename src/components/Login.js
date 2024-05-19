@@ -69,6 +69,19 @@ function Login() {
     }
   }, [loginState, signupState]);
 
+  useEffect(() => {
+    if (loginState.isLoginFail) {
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "Login Fails!",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
+    }
+  }, [loginState]);
+
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const handleSubmit = async () => {

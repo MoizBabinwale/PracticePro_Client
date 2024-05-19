@@ -1,12 +1,10 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { AuthContext } from "../../context/AuthProvider";
 import { changeUserStatus } from "../../actions/action";
 
 const Success = () => {
   const seachQuery = useSearchParams()[0];
 
-  const { subscribtionSelected } = useContext(AuthContext);
   const referenceNum = seachQuery.get("reference");
   useEffect(() => {
     updateUser();

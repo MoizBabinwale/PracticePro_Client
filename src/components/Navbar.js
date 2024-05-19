@@ -18,7 +18,7 @@ function Navbar() {
   };
 
   return (
-    <nav className={`nav ${isSearchOpen ? "openSearch" : ""} ${isNavOpen ? "openNav" : ""}`}>
+    <nav className={`nav ${isSearchOpen ? "openSearch" : ""} ${isNavOpen ? "openNav" : ""}`} style={{ zIndex: "999" }}>
       <i className="uil uil-bars navOpenBtn" onClick={toggleNav}>
         <GiHamburgerMenu onClick={() => setIsSearchOpen(false)} />
       </i>
