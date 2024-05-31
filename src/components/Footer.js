@@ -159,7 +159,7 @@ const Footer = () => {
         </div>
         <div className="footer_copyright">
           {/* <img src={copyrightWhite} alt="" /> */}
-          <p id="copy-right">COPYRIGHT (2024) JOHN WICK</p>
+          <p id="copy-right"> © 2024 Practice Pro all right reserved | Designed by P H Techno</p>
         </div>
       </footer>
     </>

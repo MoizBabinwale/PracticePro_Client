@@ -4,7 +4,10 @@ import { Carousel } from "react-bootstrap";
 // import { Carousel } from 'react-responsive-carousel';
 import { useMediaQuery } from "@mui/material";
 import { Link } from "react-router-dom";
+import homepagebanner2 from "../assets/homepagebanne2.png";
+import homepagebanne3 from "../assets/homepagebanne3.png";
 import homepagebanner from "../assets/homepagebanner.png";
+import homepagebanner1 from "../assets/homepagebanner1.png";
 
 function Section1() {
   const isMobile = useMediaQuery("(max-width:568px)");
@@ -18,11 +21,15 @@ function Section1() {
     },
     {
       title: "this is 1 ",
-      imgUrl: homepagebanner,
+      imgUrl: homepagebanner2,
     },
     {
       title: "this is 1 ",
-      imgUrl: homepagebanner,
+      imgUrl: homepagebanne3,
+    },
+    {
+      title: "this is 1 ",
+      imgUrl: homepagebanner1,
     },
   ];
   //   useEffect(() => {

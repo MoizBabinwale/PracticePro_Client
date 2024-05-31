@@ -283,13 +283,12 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions }) => {
         try {
           const response = await axios.post(TEST_API + "/deleteQeustions", { _id: ID }, testHeaders);
           if (response) {
-            toast.success("Question Deleated Successfully!");
             getAllQuestions();
+            Swal.fire("Deleted!", "Your question has been deleted.", "success");
           }
         } catch (error) {
           console.log("error ", error);
         }
-        Swal.fire("Deleted!", "Your question has been deleted.", "success");
       }
     });
   };
@@ -446,7 +445,13 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions }) => {
                 <>
                   {options.map((option, index) => (
                     <div key={index} className="flex items-center mb-2">
-                      <input type="text" value={option.text} onChange={(e) => handleChangeOption(index, e.target.value)} className="w-full border-gray-300 rounded-md px-4 py-2 mr-2 focus:outline-none focus:border-blue-500" placeholder={`Option ${index + 1}`} />
+                      <input
+                        type="text"
+                        value={option.text}
+                        onChange={(e) => handleChangeOption(index, e.target.value)}
+                        className="w-full border-gray-300 rounded-md px-4 py-2 mr-2 focus:outline-none focus:border-blue-500"
+                        placeholder={`Option ${index + 1}`}
+                      />
                       <label className="inline-flex items-center cursor-pointer">
                         <input type="radio" name="correctAnswer" checked={option.isCorrect} onChange={() => handleCorrectChange(index)} className="form-radio h-5 w-5 text-blue-500" />
                         <span className="ml-2">Correct</span>
@@ -514,13 +519,13 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions }) => {
         <div className="ask-ques-container rounded-sm">
           <div className="md:w-[1120px] w-fit  ">
             <div key={key} className=" my-2 py-3 px-3 bg-white">
-              <div className="items-center">
+              <div className="items-center d-flex">
                 <span>
                   {key + 1}
                   {")"}
                 </span>
                 {!item.text.includes("uploads") ? (
-                  <input className="ml-3 w-[200px] md:w-auto" defaultValue={item.text} onChange={(e) => handleQuestionTitleChange(e, key)} placeholder="Enter your question" />
+                  <textarea className="ml-3 w-full h-[80px] p-2" defaultValue={item.text} onChange={(e) => handleQuestionTitleChange(e, key)} placeholder="Enter your question" />
                 ) : (
                   <div className="w-[25%] h-40 mb-2 ml-4">
                     <img className="w-full h-full object-contain items-start" src={baseUrl + item.text} alt="Placeholder Image" />
@@ -541,7 +546,13 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions }) => {
                       <img className="h-[100px] ml-3" height={"100px"} width={"25%"} src={baseUrl + option.text} alt="option" />
                     </div>
                   ) : (
-                    <input type="text" value={option.text} onChange={(e) => EditChangeOption(index, key, e.target.value)} className="w-full border-gray-300 rounded-md px-4 py-2 mr-2 focus:outline-none focus:border-blue-500" placeholder={`Option ${index + 1}`} />
+                    <input
+                      type="text"
+                      value={option.text}
+                      onChange={(e) => EditChangeOption(index, key, e.target.value)}
+                      className="w-full border-gray-300 rounded-md px-4 py-2 mr-2 focus:outline-none focus:border-blue-500"
+                      placeholder={`Option ${index + 1}`}
+                    />
                   )}
                   <label className="inline-flex items-center cursor-pointer">
                     <input type="radio" name={`correctAnswer_${key}`} checked={option.isCorrect} onChange={() => EditCorrectOption(index, key)} className="form-radio h-5 w-5 text-blue-500" />
