@@ -7,9 +7,11 @@ import { TEST_API } from "../actions/api";
 
 import { AuthContext } from "../context/AuthProvider";
 import Section1 from "./Section1";
+import LoadingSkeleton from "./LoadingSkeleton";
 function Home() {
   // const { isNavOpen } = useNavigation();
   const [testData, setTestData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const { isPremiumUser } = useContext(AuthContext);
   const dispatch = useDispatch();
@@ -20,10 +22,12 @@ function Home() {
 
   const getAllTests = async () => {
     try {
+      setLoading(true);
       const response = await axios.get(TEST_API + "/getAllTest"); // Await the axios request
       if (response) {
         setTestData(response.data.Tests);
       }
+      setLoading(false);
     } catch (error) {
       console.log("error ", error);
     }
@@ -77,37 +81,50 @@ function Home() {
                   )}
                 </div>
               </div> */}
-              {testData.map((item, index) => (
-                <div key={index} className={`slick-slide px-2 md:w-[380px] felx   md:rounded-md md:col-span-1 h-mb-100 cursor-pointer`} onClick={() => navigate("/giveTest")}>
-                  <div className="popular-card flex flex-col relative h-full " style={{ boxShadow: "0 10px 15px 0 rgba(49,45,43,.1)" }}>
-                    <div className="popular-card__head bg-orange-200" style={{ padding: "13px 30px 10px" }}>
-                      <div className="line bg-[#f98d49] h-1 w-full absolute top-0 left-0"></div>
-                    </div>
-                    <div className="popular-card__body" style={{ padding: "24px 30px" }}>
-                      <h3 className="text-24 text-f49 font-semibold">{item.testName}</h3>
-                      <div className="h-full mb-4 md:mb-3 text-16 text-888 h-full">
-                        {item.subjectIds.map((data, i) => (
-                          <span>{data.name}</span>
-                        ))}
-                      </div>
-                      <p className="mb-0 text-14 text-f49"></p>
-                    </div>
-                    {!isPremiumUser && (
-                      <div className="popular-card__footer !mt-auto" style={{ padding: "14px 30px 40px" }}>
-                        <div className="flex items-center flex-wrap mb-3 md:pb-1">
-                          <h4 className="mb-0 inline-block text-22 text-f49 font-semibold">Rs.2800/-</h4>
+              {loading ? (
+                <>
+                  {new Array(5).fill(true).map((_, index) => (
+                    <LoadingSkeleton />
+                  ))}
+                </>
+              ) : (
+                <>
+                  {testData.length === 0 && <div>No Test Data Added!</div>}
+                  {testData.map((item, index) => (
+                    <div key={index} className={`slick-slide px-2 md:w-[380px] felx   md:rounded-md md:col-span-1 h-mb-100 cursor-pointer`} onClick={() => navigate("/giveTest")}>
+                      <div className="popular-card flex flex-col relative h-full " style={{ boxShadow: "0 10px 15px 0 rgba(49,45,43,.1)" }}>
+                        <div className="popular-card__head bg-orange-200" style={{ padding: "13px 30px 10px" }}>
+                          <div className="line bg-[#f98d49] h-1 w-full absolute top-0 left-0"></div>
                         </div>
+                        <div className="popular-card__body" style={{ padding: "24px 30px" }}>
+                          <h3 className="text-24 text-f49 font-semibold">{item.testName}</h3>
+                          <div className="h-full mb-4 md:mb-3 text-16 text-888 h-full">
+                            {item.subjectIds.map((data, i) => (
+                              <span>{data.name}</span>
+                            ))}
+                          </div>
+                          <p className="mb-0 text-14 text-f49"></p>
+                        </div>
+                        {!isPremiumUser && (
+                          <div className="popular-card__footer !mt-auto" style={{ padding: "14px 30px 40px" }}>
+                            <div className="flex items-center flex-wrap mb-3 md:pb-1">
+                              <h4 className="mb-0 inline-block text-22 text-f49 font-semibold">Rs.2800/-</h4>
+                            </div>
 
-                        <div className="flex md:justify-between clearfix card-btn md:mx-[-5px]">
-                          <Link to="/buyPremium">
-                            <a className="float-left rounded-md border-[#4a398d] cursor-pointer text-white items-center font-normal uppercase px-3 py-2 bg-[#4a398d]    md:ml-auto md:float-left ml-auto mr-auto">Get Demo &amp; buy</a>
-                          </Link>
-                        </div>
+                            <div className="flex md:justify-between clearfix card-btn md:mx-[-5px]">
+                              <Link to="/buyPremium">
+                                <a className="float-left rounded-md border-[#4a398d] cursor-pointer text-white items-center font-normal uppercase px-3 py-2 bg-[#4a398d]    md:ml-auto md:float-left ml-auto mr-auto">
+                                  Get Demo &amp; buy
+                                </a>
+                              </Link>
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                </div>
-              ))}
+                    </div>
+                  ))}
+                </>
+              )}
 
               {/* <!-- Each program card ends here --> */}
             </div>

@@ -38,11 +38,18 @@ function Navbar() {
         {isLoggedIn && (
           <>
             {isAdmin && (
-              <li>
-                <Link className="Nav-link-tag" to="/createTest">
-                  Create Test
-                </Link>
-              </li>
+              <>
+                <li>
+                  <Link className="Nav-link-tag" to="/createTest">
+                    Create Test
+                  </Link>
+                </li>
+                <li>
+                  <Link className="Nav-link-tag" to="/allTests">
+                    All Tests
+                  </Link>
+                </li>
+              </>
             )}
             {!isPremiumUser && (
               <li>

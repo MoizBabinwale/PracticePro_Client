@@ -48,6 +48,52 @@
 .marquee2 span {
   animation-delay: 5s;
 }
+.tc-Footer {
+  width: 100%;
+  /* position: fixed;
+  bottom: 0; */
+  /* margin-bottom: 12px; */
+  margin: 96px 0 0;
+}
+
+.footer-Text {
+  text-align: center;
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 500;
+  color: #828ea6;
+}
+
+.footer-Text span {
+  font-weight: 600;
+  color: #1b325e;
+  cursor: pointer;
+}
+
+.floating_Footer {
+  height: 64px;
+  background: #ffffff;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.5rem 1rem;
+}
+
+.floating_Footer_Wrapper {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.floating_Footer_Left,
+.floating_Footer_Right {
+  width: 45%;
+}
+
+.floating_Footer_Center {
+  width: 100%;
+}
 @keyframes marquee {
   0% {
     transform: translate(0, 0);

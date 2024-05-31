@@ -77,27 +77,25 @@ function BuyPremiumPage() {
       amount,
       userName,
     });
-    console.log("key ", key);
-    console.log("order ", order);
     const options = {
       key,
       amount: order.amount,
       currency: "INR",
-      name: "Practice-Pro",
-      description: "Practice kro Pro Bno",
+      name: "6 Pack Programmer",
+      description: "Tutorial of RazorPay",
       image: "https://avatars.githubusercontent.com/u/25058652?v=4",
       order_id: order.id,
       callback_url: API + "/paymentverification",
       prefill: {
-        name: "Gaurav Kumar",
-        email: "gaurav.kumar@example.com",
-        contact: "9999999999",
+        name: form?.name,
+        email: form?.email,
+        contact: form?.phone,
       },
       notes: {
         address: "Razorpay Corporate Office",
       },
       theme: {
-        color: "#121212",
+        color: "#4a98f7",
       },
     };
     const razor = await new window.Razorpay(options);
@@ -113,7 +111,9 @@ function BuyPremiumPage() {
           <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
             <div className="mx-auto max-w-screen-md text-center mb-8 lg:mb-12">
               <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Designed for business teams like yours</h2>
-              <p className="mb-5 font-light text-gray-500 sm:text-xl dark:text-gray-400">Here at Flowbite we focus on markets where technology, innovation, and capital can unlock long-term value and drive economic growth.</p>
+              <p className="mb-5 font-light text-gray-500 sm:text-xl dark:text-gray-400">
+                Here at Flowbite we focus on markets where technology, innovation, and capital can unlock long-term value and drive economic growth.
+              </p>
             </div>
             <div className="space-y-8 lg:grid lg:grid-cols-3 sm:gap-6 xl:gap-10 lg:space-y-0">
               <div className="flex flex-col p-6 mx-auto max-w-lg text-center text-gray-900 bg-white rounded-lg border border-gray-100 shadow dark:border-gray-600 xl:p-8 dark:bg-gray-800 dark:text-white">

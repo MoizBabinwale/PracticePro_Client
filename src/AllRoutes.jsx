@@ -10,6 +10,8 @@ import Success from "./components/payment/Success";
 import Failure from "./components/payment/Failure";
 import GiveTest from "./components/GiveTest";
 import StartTest from "./components/StartTest";
+import AllTests from "./components/AllTests";
+import ContactUs from "./components/ContactUs";
 
 const AllRoutes = () => {
   return (
@@ -24,6 +26,8 @@ const AllRoutes = () => {
       <Route exact path="/cancel" element={<Failure />} />
       <Route exact path="/giveTest" element={<GiveTest />} />
       <Route exact path="/startTest" element={<StartTest />} />
+      <Route exact path="/allTests" element={<AllTests />} />
+      <Route exact path="/customer-support" element={<ContactUs />} />
     </Routes>
   );
 };

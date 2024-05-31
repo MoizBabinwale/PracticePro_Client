@@ -92,6 +92,7 @@ const CreateTest = () => {
 
   const getTopicName = async (testId) => {
     try {
+      console.log("testHeaders ", testHeaders);
       const response = await axios.get(TEST_API + `/getSubjects/${testId}`, testHeaders); // Await the axios request
       if (response) {
         console.log(response);
@@ -335,8 +336,8 @@ const CreateTest = () => {
       <Dialog className="max-w-sm justify-center items-center" open={size === "topic"} size={"sm"} handler={handleOpen}>
         <DialogHeader>Create New Topic</DialogHeader>
         <DialogBody>
-          <input className="text-white bg-gray-500 border-white   mb-3  rounded-md  px-3 py-2 w-100" placeholder="Enter Topic Name" id="topicName" />
-          <input className="text-white bg-gray-500 border-white   px-3 py-2 w-100 rounded-md" placeholder="Enter Description" id="description" />
+          <input className="  border-white   mb-3  rounded-md  px-3 py-2 w-100" style={{ background: "rgb(228 237 255)" }} placeholder="Enter Topic Name" id="topicName" />
+          <input className=" border-white   px-3 py-2 w-100 rounded-md" style={{ background: "rgb(228 237 255)" }} placeholder="Enter Description" id="description" />
         </DialogBody>
         <DialogFooter>
           <Button variant="text" color="red" id="closeTopicBtn" onClick={() => handleOpen(null)} className="mr-1">
@@ -351,7 +352,7 @@ const CreateTest = () => {
       <Dialog className="max-w-sm justify-center items-center" open={size === "Time"} size={"sm"} handler={handleOpen}>
         <DialogHeader>Create New Difficulty</DialogHeader>
         <DialogBody>
-          <input className="text-white bg-gray-500 border-none  mb-3  rounded-md  px-3 py-2 w-100" placeholder="Enter Time" id="time" />
+          <input className="  border-none  mb-3  rounded-md  px-3 py-2 w-100" style={{ background: "rgb(228 237 255)" }} placeholder="Enter Time" id="time" />
           <p className="mt-2 text-sm text-red-600 dark:text-red-500">
             <span className="font-medium">Note!</span> Please Write the timing in order of 10,20,30...etc.
           </p>
@@ -369,7 +370,7 @@ const CreateTest = () => {
       <Dialog className="max-w-sm justify-center items-center" open={size === "Difficulty"} size={"sm"} handler={handleOpen}>
         <DialogHeader>Create New Topic</DialogHeader>
         <DialogBody>
-          <input className="text-white bg-gray-500 border-none  mb-3  rounded-md  px-3 py-2 w-100" placeholder="Enter New Difficulty" id="difficultyName" />
+          <input className="  border-none  mb-3  rounded-md  px-3 py-2 w-100" style={{ background: "rgb(228 237 255)" }} placeholder="Enter New Difficulty" id="difficultyName" />
         </DialogBody>
         <DialogFooter>
           <Button variant="text" color="red" id="closeDiffiBtn" onClick={() => handleOpen(null)} className="mr-1">
@@ -384,7 +385,7 @@ const CreateTest = () => {
       <Dialog className="max-w-sm justify-center items-center" open={size === "ExamModal"} size="md" handler={handleOpen}>
         <DialogHeader>Create New Exam</DialogHeader>
         <DialogBody>
-          <input className="text-white bg-gray-500 border-white   mb-3  rounded-md  px-3 py-2 w-100" placeholder="Enter Exam Name" id="ExamName" />
+          <input className="  border-white   mb-3  rounded-md  px-3 py-2 w-100" style={{ background: "rgb(228 237 255)" }} placeholder="Enter Exam Name" id="ExamName" />
           <div className="h-[130px] overflow-auto">
             {topics ? (
               <ul>

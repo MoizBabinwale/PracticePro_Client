@@ -23,11 +23,11 @@ function StartTest() {
   useEffect(() => {
     const testInfo = JSON.parse(localStorage.getItem("testData"));
     var savedTimeLeft = parseInt(localStorage.getItem("timeLeft"), 10) || 0;
-    const initialTimeLeft = testInfo.timeName * 60 || 0; // Convert minutes to seconds
+    const initialTimeLeft = testInfo?.timeName * 60 || 0; // Convert minutes to seconds
 
     if (savedTimeLeft === 0) {
-      localStorage.setItem("timeLeft", (testInfo.timeName * 60).toString());
-      savedTimeLeft = testInfo.timeName * 60;
+      localStorage.setItem("timeLeft", (testInfo?.timeName * 60).toString());
+      savedTimeLeft = testInfo?.timeName * 60;
     }
 
     setTimeLimit(initialTimeLeft);
@@ -73,11 +73,11 @@ function StartTest() {
       return;
     }
     setTestData(testInfo);
-    var testId = testInfo.testId;
-    var topicId = testInfo.topicId;
-    var timeName = testInfo.timeName;
-    var difficultyId = testInfo.difficultyId;
-    var questionLimit = testInfo.numberOfQuestions;
+    var testId = testInfo?.testId;
+    var topicId = testInfo?.topicId;
+    var timeName = testInfo?.timeName;
+    var difficultyId = testInfo?.difficultyId;
+    var questionLimit = testInfo?.numberOfQuestions;
     fetchQuestions(testId, topicId, difficultyId, questionLimit);
   }, []);
 
@@ -182,7 +182,7 @@ function StartTest() {
   return (
     <div className="container">
       {gettingData || sendingData || resultFetched ? (
-        <div className="fixed top-0 left-0 w-full h-full flex flex-col justify-center items-center">
+        <div className={`top-0 left-0 w-full h-full flex flex-col justify-center items-center ${resultFetched ? "flex mt-36" : "fixed"}`}>
           {gettingData && <div className="font-semibold">Getting Result Ready...!</div>}
           {sendingData && <div className="font-semibold">Sending Data...</div>}
           {resultFetched && (
@@ -204,7 +204,7 @@ function StartTest() {
       {!resultFetched && (
         <div className={`${gettingData || sendingData ? "blur" : ""}`}>
           <div className="my-2 py-3 shadow-md px-4">
-            <h1 className="font-bold ">Exam Name : {testData.testName}</h1>
+            <h1 className="font-bold ">Exam Name : {testData?.testName}</h1>
             <div>Time Left: {formatTime(timeLeft)}</div>
           </div>
 
@@ -215,7 +215,7 @@ function StartTest() {
             <div style={{ flex: 3 }} className="h-screen">
               {/* Display current question and options */}
               <h2>Question {currentQuestionIndex + 1}</h2>
-              <div className="h-[500px]">
+              <div className="h-[350px]">
                 <div>
                   {questions[currentQuestionIndex]?.text && questions[currentQuestionIndex]?.questionImage ? (
                     <div>
@@ -224,7 +224,9 @@ function StartTest() {
                     </div>
                   ) : (
                     <>
-                      {questions[currentQuestionIndex]?.text.split(".")[1] === "png" || questions[currentQuestionIndex]?.text.split(".")[1] === "jpg" || questions[currentQuestionIndex]?.text.split(".")[1] === "jpeg" ? (
+                      {questions[currentQuestionIndex]?.text.split(".")[1] === "png" ||
+                      questions[currentQuestionIndex]?.text.split(".")[1] === "jpg" ||
+                      questions[currentQuestionIndex]?.text.split(".")[1] === "jpeg" ? (
                         <img className="h-[100px] ml-3" height={"100px"} width={"25%"} src={baseUrl + questions[currentQuestionIndex].text} alt="option" />
                       ) : (
                         <p>{questions[currentQuestionIndex]?.text}</p>
@@ -246,7 +248,12 @@ function StartTest() {
                         checked={questions[currentQuestionIndex].selectedOption === option._id} // Add this if you want to control the checked state
                       />
                       {String.fromCharCode(65 + index)}
-                      {")"} {option.text.split(".")[1] === "png" || option.text.split(".")[1] === "jpg" || option.text.split(".")[1] === "jpeg" ? <img className="h-[100px] ml-3" height={"100px"} width={"25%"} src={baseUrl + option.text} alt="option" /> : option.text}
+                      {")"}{" "}
+                      {option.text.split(".")[1] === "png" || option.text.split(".")[1] === "jpg" || option.text.split(".")[1] === "jpeg" ? (
+                        <img className="h-[100px] ml-3" height={"100px"} width={"25%"} src={baseUrl + option.text} alt="option" />
+                      ) : (
+                        option.text
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -260,7 +267,11 @@ function StartTest() {
                 <button className="flex-end bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" onClick={handlePreviousQuestion} disabled={currentQuestionIndex === 0}>
                   Previous
                 </button>
-                <button className="flex-end bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" onClick={handleNextQuestion} disabled={currentQuestionIndex === questions.length - 1}>
+                <button
+                  className="flex-end bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+                  onClick={handleNextQuestion}
+                  disabled={currentQuestionIndex === questions.length - 1}
+                >
                   Next
                 </button>
               </div>
@@ -283,7 +294,11 @@ function StartTest() {
               </div>
               <div className="flex flex-wrap gap-3 p-2" style={{ maxHeight: "400px", overflowY: "auto" }}>
                 {questions.map((item, index) => (
-                  <span className={`p-3 rounded-full border-2 cursor-pointer ${item.selectedOption ? "bg-green-500" : ""} ${index + 1 === currentQuestionIndex + 1 ? "bg-blue-600 text-white" : ""}`} onClick={() => setQuestionNumber(index)} key={index}>
+                  <span
+                    className={`p-3 rounded-full border-2 cursor-pointer ${item.selectedOption ? "bg-green-500" : ""} ${index + 1 === currentQuestionIndex + 1 ? "bg-blue-600 text-white" : ""}`}
+                    onClick={() => setQuestionNumber(index)}
+                    key={index}
+                  >
                     {index + 1}
                   </span>
                 ))}

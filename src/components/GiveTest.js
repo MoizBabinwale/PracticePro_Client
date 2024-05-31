@@ -38,9 +38,7 @@ function GiveTest() {
     getAllTest();
   }, []);
   useEffect(() => {
-    if (!isPremiumUser) {
-      setNotPremiumUser(true);
-    }
+    setNotPremiumUser(isPremiumUser);
   }, [isPremiumUser]);
 
   const getTest = useSelector((state) => state.test);
@@ -93,7 +91,7 @@ function GiveTest() {
 
   const handleStartTest = () => {
     setLoading(true);
-    if (premiumUser) {
+    if (!premiumUser) {
       startDemoTest();
       return;
     }
@@ -161,7 +159,7 @@ function GiveTest() {
             <img src={manImage} className="w-full" alt="" />
           </div>
           <div role="region" aria-disabled="true" className="col-lg-6 bg-white pt-10 flex items-center justify-center  flex-col ">
-            {premiumUser && (
+            {!premiumUser && (
               <div className="flex justify-start items-start w-[70%]">
                 <p className="text-red-600 items-start justify-start">* Enable Premium To unlock All Feature!</p>
               </div>
@@ -177,7 +175,7 @@ function GiveTest() {
                   testName: testName,
                 }}
                 renderInput={(params) => <TextField {...params} value={testName} variant="standard" placeholder="Select Exam Name" />}
-                disabled={premiumUser}
+                disabled={!premiumUser}
               />
             </div>
 
@@ -193,7 +191,7 @@ function GiveTest() {
                   name: topicName,
                 }}
                 renderInput={(params) => <TextField {...params} value={topicName} variant="standard" placeholder="Select Topic" />}
-                disabled={premiumUser}
+                disabled={!premiumUser}
               />
             </div>
             <div className="col-lg-8 my-3">
@@ -208,12 +206,22 @@ function GiveTest() {
                   time: timeName,
                 }}
                 renderInput={(params) => <TextField {...params} value={timeName} variant="standard" placeholder="Select Time" />}
-                disabled={premiumUser}
+                disabled={!premiumUser}
               />
             </div>
             {/* <TextField type="number" value={time} onChange={handleTimeChange} label="Time (in minutes)" variant="standard" placeholder="Enter Time" /> */}
             <div className="col-lg-8 my-3">
-              <TextField type="number" className="w-full" min="1" id="numberOfQuestions" disabled={premiumUser} onKeyDown={handleNumQuestionsChange} label="Number of Questions" variant="standard" placeholder="Enter Number of Questions" />
+              <TextField
+                type="number"
+                className="w-full"
+                min="1"
+                id="numberOfQuestions"
+                disabled={!premiumUser}
+                onKeyDown={handleNumQuestionsChange}
+                label="Number of Questions"
+                variant="standard"
+                placeholder="Enter Number of Questions"
+              />
             </div>
 
             <div className="col-lg-8 my-3">
@@ -227,11 +235,11 @@ function GiveTest() {
                   level: difficultyName,
                 }}
                 renderInput={(params) => <TextField {...params} variant="standard" placeholder="Select Difficulty Level" />}
-                disabled={premiumUser}
+                disabled={!premiumUser}
               />
             </div>
             <button className="flex-end bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" onClick={() => handleStartTest()}>
-              {premiumUser ? "Start Demo Test" : "Start Test"}
+              {!premiumUser ? "Start Demo Test" : "Start Test"}
             </button>
           </div>
         </div>
