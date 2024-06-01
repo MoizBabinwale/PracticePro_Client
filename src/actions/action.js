@@ -123,7 +123,6 @@ export const changeUserStatus = async () => {
     const user = JSON.parse(localStorage.getItem("Profile"));
     const subscribeFor = localStorage.getItem("subscriptionFor");
     const id = user?.data?._id;
-    console.log("id ", id);
     const response = await axios.post(
       API + "/updateUserSubscription",
       { id, subscribeFor },

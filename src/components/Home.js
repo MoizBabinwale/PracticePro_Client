@@ -108,7 +108,7 @@ function Home() {
                         {!isPremiumUser && (
                           <div className="popular-card__footer !mt-auto" style={{ padding: "14px 30px 40px" }}>
                             <div className="flex items-center flex-wrap mb-3 md:pb-1">
-                              <h4 className="mb-0 inline-block text-22 text-f49 font-semibold">Rs.2800/-</h4>
+                              <h4 className="mb-0 inline-block text-22 text-f49 font-semibold">Rs.149/-</h4>
                             </div>
 
                             <div className="flex md:justify-between clearfix card-btn md:mx-[-5px]">

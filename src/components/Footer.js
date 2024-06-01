@@ -159,7 +159,15 @@ const Footer = () => {
         </div>
         <div className="footer_copyright">
           {/* <img src={copyrightWhite} alt="" /> */}
-          <p id="copy-right"> © 2024 Practice Pro all right reserved | Designed by P H Techno</p>
+          <p id="copy-right">
+            {" "}
+            © 2024 Practice Pro all right reserved | Designed by 
+            <span className="font-bold">
+              <a href="https://forms.gle/sXxK2pMgB4xbio3B9" target="_blank">
+                P H Techno
+              </a>
+            </span>
+          </p>
         </div>
       </footer>
     </>
