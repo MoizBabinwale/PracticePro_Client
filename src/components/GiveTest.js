@@ -155,10 +155,10 @@ function GiveTest() {
         <Loader />
       ) : (
         <div className="row">
-          <div className="col-lg-6 p-0">
-            <img src={manImage} className="w-full" alt="" />
+          <div className="col-lg-6 p-0 justify-center flex bg-white md:block">
+            <img src={manImage} className="md:w-full h-[280px] md:h-auto w-[280px]" alt="" />
           </div>
-          <div role="region" aria-disabled="true" className="col-lg-6 bg-white pt-10 flex items-center justify-center  flex-col ">
+          <div role="region" aria-disabled="true" className="col-lg-6 bg-white pt-10 flex md:items-center md:justify-center  justify-normal  flex-col ">
             {!premiumUser && (
               <div className="flex justify-start items-start w-[70%]">
                 <p className="text-red-600 items-start justify-start">* Enable Premium To unlock All Feature!</p>

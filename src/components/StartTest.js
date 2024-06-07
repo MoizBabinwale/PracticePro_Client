@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { IoIosHome } from "react-icons/io";
 import Swal from "sweetalert2";
+import Confetti from "react-confetti";
 
 function StartTest() {
   const [testData, setTestData] = useState({});
@@ -140,7 +141,6 @@ function StartTest() {
   };
 
   const fetchResult = useSelector((state) => state.fetchresult);
-
   useEffect(() => {
     if (fetchResult) {
       setResultFetched(fetchResult.result);
@@ -183,6 +183,7 @@ function StartTest() {
     <div className="container">
       {gettingData || sendingData || resultFetched ? (
         <div className={`top-0 left-0 w-full h-full flex flex-col justify-center items-center ${resultFetched ? "flex mt-36" : "fixed"}`}>
+          <Confetti width={100} height={100} />
           {gettingData && <div className="font-semibold">Getting Result Ready...!</div>}
           {sendingData && <div className="font-semibold">Sending Data...</div>}
           {resultFetched && (
@@ -208,11 +209,11 @@ function StartTest() {
             <div>Time Left: {formatTime(timeLeft)}</div>
           </div>
 
-          <div className="mt-7 mx-3 pl-2 pt-4" style={{ display: "flex" }}>
+          <div className="mt-7 mx-3 pl-2 pt-4 md:flex-row gap-3 md:gap-0 flex-col" style={{ display: "flex" }}>
             {/* Question map on the right side */}
 
             {/* Question and options on the left side */}
-            <div style={{ flex: 3 }} className="h-screen">
+            <div style={{ flex: 3 }} className="border rounded-md p-4 shadow-md md:border-none md:p-0  h-screen">
               {/* Display current question and options */}
               <h2>Question {currentQuestionIndex + 1}</h2>
               <div className="h-[350px]">

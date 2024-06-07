@@ -39,7 +39,7 @@ function Home() {
     <>
       <Section1 />
       <div className="container ">
-        <div className="mx-16">
+        <div className="lg:mx-16 ">
           <div className="flex flex-col mb-2">
             <div className="flex flex-col md:flex-row items-end sec-head">
               <h2 className="float-left text-f49 text-44 font-semibold mb-0 col-span-8 px-0 md:col-span-8">

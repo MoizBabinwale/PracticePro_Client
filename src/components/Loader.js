@@ -2,7 +2,7 @@ import React from "react";
 
 function Loader() {
   return (
-    <div className="fixed top-1/2 left-1/2">
+    <div className="flex justify-center h-full w-full  top-1/2 left-1/2 ">
       <div role="status">
         <svg aria-hidden="true" className="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-purple-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path

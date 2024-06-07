@@ -54,7 +54,7 @@ function AllTestDetails() {
             <span>Poor Grade/Average</span>
           </div>
           {result.length > 0 ? (
-            <table className="table-fixed w-full">
+            <table className="table-fixed w-full text-sm md:text-lg">
               <thead className="bg-slate-500 text-white">
                 <tr>
                   <th className="w-1/6 py-2 pl-2">Sr. No.</th>

@@ -85,9 +85,11 @@ const CreateTest = () => {
     }
   };
   const handleTestNameChange = (value) => {
-    setTestId(value._id);
-    setTestName(value.testName);
-    getTopicName(value._id);
+    if (value) {
+      setTestId(value._id);
+      setTestName(value.testName);
+      getTopicName(value._id);
+    }
   };
 
   const getTopicName = async (testId) => {
@@ -284,7 +286,7 @@ const CreateTest = () => {
         </div> */}
       </div>
 
-      <div className="ax-auto row mt-3 items-center justify-center">
+      <div className="ax-auto row  items-center justify-center md:gap-0 gap-5 md:mt-0 mt-5">
         <div className=" relative z-0  group col-lg-3">
           <Autocomplete
             className=""

@@ -392,7 +392,7 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions }) => {
     setQuestionData(question);
   };
   return (
-    <div className="mx-5 flex flex-col" style={{ width: "100%" }}>
+    <div className="md:mx-10  flex flex-col" style={{ width: "100%" }}>
       <div className="ask-ques-container">
         <h1>Ask a Question</h1>
         <form className="md:w-[1120px] w-fit ">
@@ -517,7 +517,7 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions }) => {
 
       {questionsData.map((item, key) => (
         <div className="ask-ques-container rounded-sm">
-          <div className="md:w-[1120px] w-fit  ">
+          <div className="md:w-[1120px]  ">
             <div key={key} className=" my-2 py-3 px-3 bg-white">
               <div className="items-center d-flex">
                 <span>

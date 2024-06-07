@@ -176,10 +176,19 @@ function Login() {
               {seenPass ? (
                 <AiOutlineEye onClick={() => setSeenPass(!seenPass)} style={{ backgroundColor: "#7d7dad", position: "relative", top: "-30px", left: "92%", borderRadius: "25%", fontSize: "larger" }} />
               ) : (
-                <AiOutlineEyeInvisible onClick={() => setSeenPass(!seenPass)} style={{ backgroundColor: "transparent", position: "relative", top: "-30px", left: "92%", borderRadius: "25%", fontSize: "larger" }} />
+                <AiOutlineEyeInvisible
+                  onClick={() => setSeenPass(!seenPass)}
+                  style={{ backgroundColor: "transparent", position: "relative", top: "-30px", left: "92%", borderRadius: "25%", fontSize: "larger" }}
+                />
               )}
             </div>
-            <button type="button" disabled={isLoading} className="btn w-full text-white items-center justify-center font-semibold bg-blue-700 hover:bg-blue-800" onClick={handleSubmit} style={{ display: "flex", alignItems: "center" }}>
+            <button
+              type="button"
+              disabled={isLoading}
+              className="btn w-full text-white items-center justify-center font-semibold bg-blue-700 hover:bg-blue-800"
+              onClick={handleSubmit}
+              style={{ display: "flex", alignItems: "center" }}
+            >
               {isSignup ? "Login" : "SignUp"}
               {loginState.isLoading && <Rings height="20" width="50" color="white" radius="6" wrapperStyle={{ marginLeft: "10px" }} wrapperclassName="" visible={true} ariaLabel="rings-loading" />}
               {isLoading && <Loader />}

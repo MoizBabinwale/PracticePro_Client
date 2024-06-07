@@ -218,6 +218,9 @@ input[type="number"] {
     transform: translateX(50%);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
+  .ask-ques-container {
+    width: auto;
+  }
 }
 
 @tailwind components;

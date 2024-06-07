@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useNavigation } from "../context/NavContext";
 import { AuthContext } from "../context/AuthProvider";
 import { useContext } from "react";
@@ -15,6 +15,11 @@ function Navbar() {
   const { isLoggedIn, logout, isPremiumUser, isAdmin } = useContext(AuthContext);
   const toggleSearch = () => {
     setIsSearchOpen(!isSearchOpen);
+  };
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    logout();
+    navigate("/");
   };
 
   return (
@@ -29,7 +34,7 @@ function Navbar() {
         <i className="uil uil-times navCloseBtn" onClick={toggleNav}>
           <RxCross2 onClick={() => setIsSearchOpen(false)} />
         </i>
-        <li>
+        <li onClick={toggleNav}>
           <Link className="Nav-link-tag" to="/">
             Home
           </Link>
@@ -39,12 +44,12 @@ function Navbar() {
           <>
             {isAdmin && (
               <>
-                <li>
+                <li onClick={toggleNav}>
                   <Link className="Nav-link-tag" to="/createTest">
                     Create Test
                   </Link>
                 </li>
-                <li>
+                <li onClick={toggleNav}>
                   <Link className="Nav-link-tag" to="/allTests">
                     All Tests
                   </Link>
@@ -52,13 +57,13 @@ function Navbar() {
               </>
             )}
             {!isPremiumUser && (
-              <li>
+              <li onClick={toggleNav}>
                 <Link className="Nav-link-tag" to="/buyPremium">
                   Buy Premium
                 </Link>
               </li>
             )}
-            <li>
+            <li onClick={toggleNav}>
               <Link className="Nav-link-tag" to="/viewAllTest">
                 My Results
               </Link>
@@ -67,18 +72,17 @@ function Navbar() {
         )}
         {isLoggedIn ? (
           <>
-            <Link className="Nav-link-tag" to="/giveTest">
+            <Link className="Nav-link-tag" to="/giveTest" onClick={toggleNav}>
               Give Test
             </Link>
-            <li className=" Nav-link-tag cursor-pointer text-white" onClick={logout}>
-              <span className="flex items-center">
-                {" "}
+            <li className=" Nav-link-tag cursor-pointer text-white" onClick={handleLogout}>
+              <span className="flex items-center" onClick={toggleNav}>
                 Logout <TbLogout className="ml-1" />
               </span>
             </li>
           </>
         ) : (
-          <li>
+          <li onClick={toggleNav}>
             <Link className="Nav-link-tag" to="/login">
               Login
             </Link>
