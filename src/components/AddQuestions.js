@@ -4,12 +4,14 @@ import { TEST_API, baseUrl } from "../actions/api";
 import Swal from "sweetalert2";
 
 import { useDispatch, useSelector } from "react-redux";
-import { testHeaders } from "../actions/testAction";
+import { getAllSubjects, testHeaders } from "../actions/testAction";
 import { nanoid } from "nanoid";
 import toast from "react-hot-toast";
 import { MdDelete } from "react-icons/md";
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
 
-const AddQuestions = ({ testId, topicId, testData, getAllQuestions }) => {
+const AddQuestions = ({ testId, topicId, testData, getAllQuestions, uassignedQuestions, testList, listTopics }) => {
   const [questionTitle, setQuestionTitle] = useState("");
   const [questionImage, setQuestionImage] = useState({});
   const [quesionCreated, setQuesionCreated] = useState(false);
@@ -391,29 +393,73 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions }) => {
     });
     setQuestionData(question);
   };
+
+  const [questionsData1, setQuestionsData1] = useState([]);
+  const [allSubjects, setAllSubjects] = useState([]);
+  useEffect(() => {
+    dispatch(getAllSubjects());
+  }, []);
+  const subjects = useSelector((state) => state.test?.subjects?.data);
+  useEffect(() => {
+    console.log("questionsData1 ", questionsData1);
+    console.log("subjects ", subjects);
+    if (subjects) {
+      setAllSubjects(subjects);
+    }
+  }, [questionsData1, subjects]);
+
+  const handleTestSelection = (event, selectedTests) => {
+    console.log("selectedTests ", selectedTests);
+    setQuestionsData1((prevQuestionsData1) => ({
+      ...prevQuestionsData1,
+      testIds: selectedTests.map((test) => ({
+        testId: test._id,
+        testName: test.testName,
+      })),
+    }));
+  };
+
+  const handleSubjectSelection = (event, selectedSubjects) => {
+    console.log("selectedSubjects ", selectedSubjects);
+    setQuestionsData1((prevQuestionsData1) => ({
+      ...prevQuestionsData1,
+      subjectIds: selectedSubjects.map((subject) => ({
+        subjectId: subject._id,
+        subjectName: subject.name,
+      })),
+    }));
+  };
+
+  const handleClickAssigne = async (id) => {
+    try {
+      const data = {
+        testIds: questionsData1.testIds,
+        subjectIds: questionsData1.subjectIds,
+        questionId: id,
+      };
+      const response = await axios.post(TEST_API + "/assignQuestionToTestsAndSubjects", data, testHeaders);
+      if (response) {
+        console.log("response ", response);
+        // getAllQuestions();
+        Swal.fire("Your Question Has been assigned to Test.", "success");
+      }
+    } catch (error) {
+      console.log("error ", error);
+    }
+  };
+
   return (
     <div className="md:mx-10  flex flex-col" style={{ width: "100%" }}>
       <div className="ask-ques-container">
-        <h1>Ask a Question</h1>
-        <form className="md:w-[1120px] w-fit ">
-          <div className="ask-form-container flex flex-col">
-            <label htmlFor="ask-ques-title">
-              <h4>Your Question </h4>
-              <p>Be specific with question </p>
-              {questionWithImage === "1" && (
-                <input
-                  type="text"
-                  id="ask-ques-title"
-                  onChange={(e) => {
-                    setQuestionTitle(e.target.value);
-                  }}
-                  placeholder="e.g. Is there an R function for finding the index of an element in a vector?"
-                />
-              )}
-              {questionWithImage === "2" && (
-                <div className="flex col-lg-12 ">
+        {!uassignedQuestions ? <h1>Ask a Question</h1> : <h1>Assigne a Question</h1>}
+        {!uassignedQuestions && (
+          <form className="md:w-[1120px] w-fit ">
+            <div className="ask-form-container flex flex-col">
+              <label htmlFor="ask-ques-title">
+                <h4>Your Question </h4>
+                <p>Be specific with question </p>
+                {questionWithImage === "1" && (
                   <input
-                    className="custom-input-width"
                     type="text"
                     id="ask-ques-title"
                     onChange={(e) => {
@@ -421,93 +467,106 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions }) => {
                     }}
                     placeholder="e.g. Is there an R function for finding the index of an element in a vector?"
                   />
-                  <input
-                    type="file"
-                    id="inputQuestionImage"
-                    onChange={(e) => {
-                      const newUploadedImages = [e.target.files[0], ...uploadedImages.slice(1)];
-                      setUploadedImages(newUploadedImages);
-                    }}
-                  />
-                </div>
-              )}
-              {questionWithImage === "3" && (
-                <>
-                  <input type="file" id="inputQuestionImage" onChange={(e) => setQuestionImage(e.target.files[0])} />
-                </>
-              )}
-            </label>
-            <div className="mb-4">
-              <label htmlFor="options" className="block mb-2">
-                Options
+                )}
+                {questionWithImage === "2" && (
+                  <div className="flex col-lg-12 ">
+                    <input
+                      className="custom-input-width"
+                      type="text"
+                      id="ask-ques-title"
+                      onChange={(e) => {
+                        setQuestionTitle(e.target.value);
+                      }}
+                      placeholder="e.g. Is there an R function for finding the index of an element in a vector?"
+                    />
+                    <input
+                      type="file"
+                      id="inputQuestionImage"
+                      onChange={(e) => {
+                        const newUploadedImages = [e.target.files[0], ...uploadedImages.slice(1)];
+                        setUploadedImages(newUploadedImages);
+                      }}
+                    />
+                  </div>
+                )}
+                {questionWithImage === "3" && (
+                  <>
+                    <input type="file" id="inputQuestionImage" onChange={(e) => setQuestionImage(e.target.files[0])} />
+                  </>
+                )}
               </label>
-              {questionWithImage === "1" || questionWithImage === "3" ? (
-                <>
-                  {options.map((option, index) => (
-                    <div key={index} className="flex items-center mb-2">
-                      <input
-                        type="text"
-                        value={option.text}
-                        onChange={(e) => handleChangeOption(index, e.target.value)}
-                        className="w-full border-gray-300 rounded-md px-4 py-2 mr-2 focus:outline-none focus:border-blue-500"
-                        placeholder={`Option ${index + 1}`}
-                      />
-                      <label className="inline-flex items-center cursor-pointer">
-                        <input type="radio" name="correctAnswer" checked={option.isCorrect} onChange={() => handleCorrectChange(index)} className="form-radio h-5 w-5 text-blue-500" />
-                        <span className="ml-2">Correct</span>
-                      </label>
-                    </div>
-                  ))}
-                </>
-              ) : (
-                <>
-                  {options.map((option, index) => (
-                    <div key={index + 1} className="flex items-center mb-2">
-                      <div>
-                        <input type="file" id={`optionFile_${index}`} onChange={(e) => handleImageChange(e, index)} />
+              <div className="mb-4">
+                <label htmlFor="options" className="block mb-2">
+                  Options
+                </label>
+                {questionWithImage === "1" || questionWithImage === "3" ? (
+                  <>
+                    {options.map((option, index) => (
+                      <div key={index} className="flex items-center mb-2">
+                        <input
+                          type="text"
+                          value={option.text}
+                          onChange={(e) => handleChangeOption(index, e.target.value)}
+                          className="w-full border-gray-300 rounded-md px-4 py-2 mr-2 focus:outline-none focus:border-blue-500"
+                          placeholder={`Option ${index + 1}`}
+                        />
                         <label className="inline-flex items-center cursor-pointer">
                           <input type="radio" name="correctAnswer" checked={option.isCorrect} onChange={() => handleCorrectChange(index)} className="form-radio h-5 w-5 text-blue-500" />
                           <span className="ml-2">Correct</span>
                         </label>
                       </div>
-                      <br />
-                      {uploadedImages[index + 1] && <img src={URL.createObjectURL(uploadedImages[index + 1])} alt={`Option ${index + 1}`} style={{ maxWidth: "100px" }} />}
-                      <br />
-                    </div>
-                  ))}
-                </>
-              )}
-            </div>
-            <div className="flex justify-between">
-              <div className="flex items-center gap-3">
-                <ul className="flex">
-                  {difficulties.map((item, index) => (
-                    <li key={index} className="ml-3">
-                      <label className="flex gap-1">
-                        <input
-                          type="radio"
-                          name="difficulty"
-                          value={item._id}
-                          checked={selectedDifficulty === item._id} // Assuming you have a state variable selectedDifficulty to keep track of the selected difficulty
-                          onChange={() => handleDifficultyChange(item._id)} // Assuming you have a function handleDifficultyChange to update the selected difficulty
-                        />
-                        {item.level}
-                      </label>
-                    </li>
-                  ))}
-                </ul>
-                <select className="p-2 appearance-none border rounded-lg w-full focus:outline-none focus:border-blue-500" onChange={(e) => handleChnageQuestionType(e)}>
-                  <option value={1}>Question With Text</option>
-                  <option value={2}>Question With Text and Options with Images</option>
-                  <option value={3}>Question With Images Options with Text</option>
-                </select>
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    {options.map((option, index) => (
+                      <div key={index + 1} className="flex items-center mb-2">
+                        <div>
+                          <input type="file" id={`optionFile_${index}`} onChange={(e) => handleImageChange(e, index)} />
+                          <label className="inline-flex items-center cursor-pointer">
+                            <input type="radio" name="correctAnswer" checked={option.isCorrect} onChange={() => handleCorrectChange(index)} className="form-radio h-5 w-5 text-blue-500" />
+                            <span className="ml-2">Correct</span>
+                          </label>
+                        </div>
+                        <br />
+                        {uploadedImages[index + 1] && <img src={URL.createObjectURL(uploadedImages[index + 1])} alt={`Option ${index + 1}`} style={{ maxWidth: "100px" }} />}
+                        <br />
+                      </div>
+                    ))}
+                  </>
+                )}
               </div>
-              <button type="button" onClick={handleuploadQuestion} className=" btn-sm bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
-                Next
-              </button>
+              <div className="flex justify-between">
+                <div className="flex items-center gap-3">
+                  <ul className="flex">
+                    {difficulties.map((item, index) => (
+                      <li key={index} className="ml-3">
+                        <label className="flex gap-1">
+                          <input
+                            type="radio"
+                            name="difficulty"
+                            value={item._id}
+                            checked={selectedDifficulty === item._id} // Assuming you have a state variable selectedDifficulty to keep track of the selected difficulty
+                            onChange={() => handleDifficultyChange(item._id)} // Assuming you have a function handleDifficultyChange to update the selected difficulty
+                          />
+                          {item.level}
+                        </label>
+                      </li>
+                    ))}
+                  </ul>
+                  <select className="p-2 appearance-none border rounded-lg w-full focus:outline-none focus:border-blue-500" onChange={(e) => handleChnageQuestionType(e)}>
+                    <option value={1}>Question With Text</option>
+                    <option value={2}>Question With Text and Options with Images</option>
+                    <option value={3}>Question With Images Options with Text</option>
+                  </select>
+                </div>
+                <button type="button" onClick={handleuploadQuestion} className=" btn-sm bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                  Next
+                </button>
+              </div>
             </div>
-          </div>
-        </form>
+          </form>
+        )}
         {/* {questionsData.length > 0 && (
           <button type="button" onClick={() => handleSeeQuestions()} className=" btn-sm bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
             See All Questions
@@ -539,11 +598,11 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions }) => {
                 )}
               </div>
               {item.options.map((option, index) => (
-                <div key={index} className="flex items-center mb-2 ">
+                <div key={index} className="flex items-center mb-2 " disabled={uassignedQuestions}>
                   <span> {String.fromCharCode(65 + index)}</span>
                   {option.text.split(".")[1] === "png" || option.text.split(".")[1] === "jpg" || option.text.split(".")[1] === "jpeg" ? (
                     <div className="w-full h-[100px]">
-                      <img className="h-[100px] ml-3" height={"100px"} width={"25%"} src={baseUrl + option.text} alt="option" />
+                      <img className="h-[100px] ml-3" height={"100px"} width={"25%"} src={baseUrl + option.text} alt="option" disabled={uassignedQuestions} />
                     </div>
                   ) : (
                     <input
@@ -552,32 +611,86 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions }) => {
                       onChange={(e) => EditChangeOption(index, key, e.target.value)}
                       className="w-full border-gray-300 rounded-md px-4 py-2 mr-2 focus:outline-none focus:border-blue-500"
                       placeholder={`Option ${index + 1}`}
+                      disabled={uassignedQuestions}
                     />
                   )}
                   <label className="inline-flex items-center cursor-pointer">
-                    <input type="radio" name={`correctAnswer_${key}`} checked={option.isCorrect} onChange={() => EditCorrectOption(index, key)} className="form-radio h-5 w-5 text-blue-500" />
+                    <input
+                      type="radio"
+                      name={`correctAnswer_${key}`}
+                      checked={option.isCorrect}
+                      onChange={() => EditCorrectOption(index, key)}
+                      className="form-radio h-5 w-5 text-blue-500"
+                      disabled={uassignedQuestions}
+                    />
                     <span className="ml-2">Correct</span>
                   </label>
                 </div>
               ))}
               <div className="flex justify-between items-center">
-                <ul className="flex">
-                  {difficulties.map((diff, index) => (
-                    <li key={index} className="ml-3">
-                      <label className="flex gap-1">
-                        <input
-                          type="radio"
-                          name={`difficulty_${key}`}
-                          defaultChecked={item.difficultyLevel === diff._id}
-                          // defaultChecked={item.difficultyLevel === diff._id ? true : false}
-                          id={`diff_${item._id}`}
-                          onChange={() => handleEditDifficultyChange(diff._id, key)} // Assuming you have a function handleDifficultyChange to update the selected difficulty
-                        />
-                        {diff.level}
-                      </label>
-                    </li>
-                  ))}
-                </ul>
+                <div className="">
+                  <ul className="flex ">
+                    {difficulties.map((diff, index) => (
+                      <li key={index} className="ml-3">
+                        <label className="flex gap-1">
+                          <input
+                            type="radio"
+                            name={`difficulty_${key}`}
+                            defaultChecked={item.difficultyLevel === diff._id}
+                            // defaultChecked={item.difficultyLevel === diff._id ? true : false}
+                            id={`diff_${item._id}`}
+                            onChange={() => handleEditDifficultyChange(diff._id, key)} // Assuming you have a function handleDifficultyChange to update the selected difficulty
+                            disabled={uassignedQuestions}
+                          />
+                          {diff.level}
+                        </label>
+                      </li>
+                    ))}
+                  </ul>
+                  {uassignedQuestions && (
+                    <div style={{ width: "500px" }}>
+                      <div className=" relative z-0  group ">
+                        <div className="mt-2">
+                          <label>Select Tests:</label>
+                          {/* {testList.map((test) => (
+                            <div key={test._id}>
+                              <input type="checkbox" value={test._id} onChange={(e) => handleTestSelection(e, key)} />
+                              {test.testName}
+                            </div>
+                          ))} */}
+                          <Autocomplete
+                            multiple
+                            id="tags-standard"
+                            options={testList}
+                            getOptionLabel={(option) => option.testName}
+                            onChange={handleTestSelection}
+                            renderInput={(params) => <TextField {...params} variant="standard" label="Multiple values" placeholder="Favorites" />}
+                          />
+                        </div>
+                        {/* Multiple select checkboxes for Subject IDs */}
+                        <div className="mt-2">
+                          <label>Select Subjects:</label>
+                          <Autocomplete
+                            multiple
+                            id="tags-standard"
+                            options={allSubjects}
+                            getOptionLabel={(option) => option.name}
+                            onChange={handleSubjectSelection}
+                            renderInput={(params) => <TextField {...params} variant="standard" label="Multiple values" placeholder="Favorites" />}
+                          />
+                        </div>
+                        <div>
+                          <button
+                            className="mt-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-3 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            onClick={() => handleClickAssigne(item._id)}
+                          >
+                            Assigne Question
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
                 <button className="text-red-700" onClick={() => handleDeleteButton(item._id)}>
                   <MdDelete />
                 </button>
@@ -587,7 +700,7 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions }) => {
         </div>
       ))}
       {questionsData.length > 0 && (
-        <div className="flex ask-ques-container justify-between ">
+        <div className="flex ask-ques-container justify-between  md:w-[1120px]   ">
           <div></div>
           <button className="flex-end bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" onClick={() => updateQuestion()}>
             Submit

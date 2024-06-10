@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { login, singUp } from "../actions/action";
+import { login, singUp, getUserExists, changePassword } from "../actions/action";
 import { Rings } from "react-loader-spinner";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import Swal from "sweetalert2";
@@ -14,6 +14,7 @@ function Login() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [verfiyEmail, setVerfiyEmail] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [isSignup, setIsSignup] = useState(true);
   const [seenPass, setSeenPass] = useState(false);
@@ -106,6 +107,32 @@ function Login() {
   const togglePage = () => {
     setIsSignup(!isSignup);
   };
+  const toggleForgotPassword = async () => {
+    if (!email) {
+      Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "Please Enter Email!",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+    }
+    setIsLoading(true);
+    const checkUserExist = await getUserExists(email);
+    if (checkUserExist.data.message === "OTP sent successfully") {
+      setVerfiyEmail(true);
+      setIsForgotPassword(true);
+    } else {
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: `${checkUserExist.data.message}`,
+        showConfirmButton: false,
+        timer: 2000,
+      });
+    }
+    setIsLoading(false);
+  };
 
   const handleVerify = async () => {
     try {
@@ -119,9 +146,13 @@ function Login() {
           showConfirmButton: false,
           timer: 2000,
         });
-        setTimeout(() => {
-          window.location.reload();
-        }, 2500);
+        if (!isForgotPassword) {
+          setTimeout(() => {
+            window.location.reload();
+          }, 2500);
+        } else {
+          promptNewPassword(email);
+        }
       }
     } catch (error) {
       console.error(error);
@@ -136,6 +167,61 @@ function Login() {
     }
   };
 
+  const promptNewPassword = (email) => {
+    Swal.fire({
+      title: "Enter New Password",
+      html: `
+        <input type="password" id="newPassword" class="swal2-input" placeholder="New Password">
+        <input type="password" id="confirmPassword" class="swal2-input" placeholder="Confirm Password">
+      `,
+      focusConfirm: false,
+      preConfirm: () => {
+        const newPassword = Swal.getPopup().querySelector("#newPassword").value;
+        const confirmPassword = Swal.getPopup().querySelector("#confirmPassword").value;
+        if (!newPassword || !confirmPassword) {
+          Swal.showValidationMessage("Please enter both password fields");
+          return false;
+        }
+        if (newPassword !== confirmPassword) {
+          Swal.showValidationMessage("Passwords do not match");
+          return false;
+        }
+        return { newPassword };
+      },
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const { newPassword } = result.value;
+        const res = await changePassword(email, newPassword);
+        if (res.status === 200) {
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Password changed successfully!",
+            showConfirmButton: false,
+            timer: 2000,
+          });
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        } else {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "Failed to change password",
+            showConfirmButton: false,
+            timer: 2000,
+          });
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        }
+      }
+    });
+  };
+
+  const handleEnter = () => {
+    handleSubmit();
+  };
   return (
     <div className="container">
       <div className="d-flex justify-content-center align-items-center vh-100 pt-16 px-3 md:!justify-around md:flex">
@@ -172,7 +258,14 @@ function Login() {
               <label htmlFor="password" className="form-label">
                 Password
               </label>
-              <input type={seenPass ? "text" : "password"} className="form-control" placeholder="Enter Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+              <input
+                type={seenPass ? "text" : "password"}
+                className="form-control"
+                placeholder="Enter Password"
+                value={password}
+                onKeyDown={handleEnter}
+                onChange={(e) => setPassword(e.target.value)}
+              />
               {seenPass ? (
                 <AiOutlineEye onClick={() => setSeenPass(!seenPass)} style={{ backgroundColor: "#7d7dad", position: "relative", top: "-30px", left: "92%", borderRadius: "25%", fontSize: "larger" }} />
               ) : (
@@ -193,22 +286,30 @@ function Login() {
               {loginState.isLoading && <Rings height="20" width="50" color="white" radius="6" wrapperStyle={{ marginLeft: "10px" }} wrapperclassName="" visible={true} ariaLabel="rings-loading" />}
               {isLoading && <Loader />}
             </button>
-            <div className="w-100" style={{ cursor: "pointer" }}>
-              <p onClick={togglePage} className="text-black mt-2">
+            <div className="w-100 flex justify-between" style={{ cursor: "pointer" }}>
+              <p onClick={togglePage} className="text-black mt-2 ">
                 {isSignup ? "Don't have an Account?" : "Alredy have an Account!"}
               </p>
+              {isSignup && (
+                <span onClick={toggleForgotPassword} className="mt-2 text-blue-500">
+                  Forgot Password?
+                </span>
+              )}
             </div>
             {loginState.isLoggedIn && <p style={{ color: "green" }}>Login Successfully!</p>}
             {loginState.isLoading === false && loginState.isLoggedIn === false && <p style={{ color: "red" }}>Login Failed !</p>}
           </div>
         ) : (
           <div className="flex flex-col w-96">
-            <h2>OTP Verification</h2>
-            <span className="text-red-600 ">*Please do Not Reload the Page!</span>
-            <input className="mt-3  border-none p-2" type="text" placeholder="Enter OTP" value={otp} onChange={(e) => setOTP(e.target.value)} maxLength={6} />
-            <button className="p-2 mt-3 bg-blue-500 hover:bg-blue-800 text-white justify-center " onClick={handleVerify} disabled={isLoading}>
-              {isLoading ? "Verifying..." : "Verify"}
-            </button>
+            <>
+              <h2>OTP Verification</h2>
+              <span className="text-red-600 ">*Please do Not Reload the Page!</span>
+              <input className="mt-3  border-none p-2" type="text" placeholder="Enter OTP" value={otp} onChange={(e) => setOTP(e.target.value)} maxLength={6} />
+              <button className="p-2 mt-3 bg-blue-500 hover:bg-blue-800 text-white justify-center " onClick={handleVerify} disabled={isLoading}>
+                {isLoading ? "Verifying..." : "Verify"}
+              </button>
+            </>
+
             {/* {verificationResult && <p>{verificationResult}</p>} */}
           </div>
         )}

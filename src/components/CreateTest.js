@@ -7,7 +7,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { useDispatch, useSelector } from "react-redux";
 import { createNewTest, getAllSubjects, getDifficultyLevel, getTimeLimits } from "../actions/testAction";
 import { AuthContext } from "../context/AuthProvider";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { TEST_API } from "../actions/api";
@@ -29,6 +29,7 @@ const CreateTest = () => {
   // const [times, setTimes] = useState([]);
   const [testList, setTestList] = useState([]);
   const [enableEditQuestion, setEnableEditQuestion] = useState(false);
+  const [uassignedQuestions, setUassignedQuestions] = useState(false);
   const [selectedTopics, setSelectedTopics] = useState([]);
 
   const handleOpen = (value) => setSize(value);
@@ -59,6 +60,21 @@ const CreateTest = () => {
       setLoading(false);
     } else {
       navigate("/");
+    }
+  }, []);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    const isLoggedIn = JSON.parse(localStorage.getItem("Profile"));
+    if (isLoggedIn && location?.state?.updateProduct) {
+      console.log("location.state ", location.state);
+      const testData = location.state.data;
+      setTestId(testData._id);
+      setTestName(testData.testName);
+      setTopicId(testData.subjectIds[0]._id);
+      setTopicName(testData.subjectIds[0].name);
+      getAllQuestionWithIds(testData._id, testData.subjectIds[0]._id);
     }
   }, []);
 
@@ -94,7 +110,6 @@ const CreateTest = () => {
 
   const getTopicName = async (testId) => {
     try {
-      console.log("testHeaders ", testHeaders);
       const response = await axios.get(TEST_API + `/getSubjects/${testId}`, testHeaders); // Await the axios request
       if (response) {
         console.log(response);
@@ -237,6 +252,34 @@ const CreateTest = () => {
     }
   };
 
+  const getAllUnassignedQue = async () => {
+    try {
+      setEnableEditQuestion(!enableEditQuestion);
+      setUassignedQuestions(true);
+      const response = await axios.get(TEST_API + "/getUnAssignedQuestion", testHeaders);
+      if (response) {
+        console.log("response ", response);
+        setQuestions(response.data);
+      }
+    } catch (error) {
+      console.log("error ", error);
+      setQuestions([]);
+    }
+  };
+
+  const getAllQuestionWithIds = async (testId, subjectId) => {
+    try {
+      setEnableEditQuestion(!enableEditQuestion);
+      const response = await axios.post(TEST_API + "/getQuestion", { subjectId, testId }, testHeaders);
+      if (response) {
+        setQuestions(response.data.questions);
+      }
+    } catch (error) {
+      console.log("error ", error);
+      setQuestions([]);
+    }
+  };
+
   return (
     <div className={loading ? "blur container " : "container "}>
       {loading && <Loader />}
@@ -259,31 +302,6 @@ const CreateTest = () => {
         <Button className="bg-none text-black shadow-md border-2 border-blue-300 px-2 py-1" onClick={() => window.location.reload()} variant="gradient">
           Clear Test
         </Button>
-
-        {/* <div data-dialog-backdrop="dialog-sm" data-dialog-backdrop-close="true" className="pointer-events-none fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 opacity-0 backdrop-blur-sm transition-opacity duration-300">
-          <div data-dialog="dialog-sm" className="relative m-4 w-1/3 min-w-[33.333333%] max-w-[33.333333%] rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 antialiased shadow-2xl">
-            <div className="flex items-center p-4 font-sans text-2xl antialiased font-semibold leading-snug shrink-0 text-blue-gray-900">Its a simple dialog.</div>
-            <div className="relative p-4 font-sans text-base antialiased font-light leading-relaxed border-t border-b border-t-blue-gray-100 border-b-blue-gray-100 text-blue-gray-500">
-              The key to more success is to have a lot of pillows. Put it this way, it took me twenty five years to get these plants, twenty five years of blood sweat and tears, and I&apos;m never giving up, I&apos;m just getting started. I&apos;m up to something. Fan luv.
-            </div>
-            <div className="flex flex-wrap items-center justify-end p-4 shrink-0 text-blue-gray-500">
-              <button
-                data-ripple-dark="true"
-                data-dialog-close="true"
-                className="px-6 py-3 mr-1 font-sans text-xs font-bold text-red-500 uppercase transition-all rounded-lg middle none center hover:bg-red-500/10 active:bg-red-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-              >
-                Cancel
-              </button>
-              <button
-                data-ripple-light="true"
-                data-dialog-close="true"
-                className="middle none center rounded-lg bg-gradient-to-tr from-green-600 to-green-400 py-3 px-6 font-sans text-xs font-bold uppercase text-white shadow-md shadow-green-500/20 transition-all hover:shadow-lg hover:shadow-green-500/40 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-              >
-                Confirm
-              </button>
-            </div>
-          </div>
-        </div> */}
       </div>
 
       <div className="ax-auto row  items-center justify-center md:gap-0 gap-5 md:mt-0 mt-5">
@@ -320,22 +338,32 @@ const CreateTest = () => {
             disabled={enableEditQuestion}
           />
         </div>
-        <div className="col-lg-3">
+        <div className="col-lg-4">
           <button
             type="submit"
-            className="mt-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            className="mt-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-3 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            id="submitBtn"
             onClick={() => getAllQuestions()}
           >
             {enableEditQuestion ? "Edit" : "Submit"}
           </button>
+          <button
+            type="submit"
+            className="mt-2 ml-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-3 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            id="submitBtn"
+            onClick={() => getAllUnassignedQue()}
+          >
+            Unassigned Question
+          </button>
         </div>
       </div>
 
-      {enableEditQuestion && <AddQuestions testId={testId} topicId={topicId} testData={questions} getAllQuestions={getAllQuestions} />}
-
+      {enableEditQuestion && questions && (
+        <AddQuestions testId={testId} topicId={topicId} testData={questions} getAllQuestions={getAllQuestions} uassignedQuestions={uassignedQuestions} testList={testList} listTopics={listTopics} />
+      )}
       {/* <Dialog open={size === "xs" || size === "sm" || size === "md" || size === "lg" || size === "xl" || size === "xxl"} size={size || "md"} handler={handleOpen}> */}
 
-      <Dialog className="max-w-sm justify-center items-center" open={size === "topic"} size={"sm"} handler={handleOpen}>
+      <Dialog className="max-w-sm justify-center items-center" style={{ left: "100%", top: "20%", height: "fit-content" }} open={size === "topic"} size={"sm"} handler={handleOpen}>
         <DialogHeader>Create New Topic</DialogHeader>
         <DialogBody>
           <input className="  border-white   mb-3  rounded-md  px-3 py-2 w-100" style={{ background: "rgb(228 237 255)" }} placeholder="Enter Topic Name" id="topicName" />
@@ -345,14 +373,14 @@ const CreateTest = () => {
           <Button variant="text" color="red" id="closeTopicBtn" onClick={() => handleOpen(null)} className="mr-1">
             <span>Cancel</span>
           </Button>
-          <Button variant="gradient" color="green" onClick={() => hadleCreateNewTopic()}>
+          <Button variant="gradient" color="green" style={{ background: "green" }} onClick={() => hadleCreateNewTopic()}>
             <span>Confirm</span>
           </Button>
         </DialogFooter>
       </Dialog>
 
-      <Dialog className="max-w-sm justify-center items-center" open={size === "Time"} size={"sm"} handler={handleOpen}>
-        <DialogHeader>Create New Difficulty</DialogHeader>
+      <Dialog className="max-w-sm justify-center items-center" style={{ left: "100%", top: "20%", height: "fit-content" }} open={size === "Time"} size={"sm"} handler={handleOpen}>
+        <DialogHeader>Create New Time Limit</DialogHeader>
         <DialogBody>
           <input className="  border-none  mb-3  rounded-md  px-3 py-2 w-100" style={{ background: "rgb(228 237 255)" }} placeholder="Enter Time" id="time" />
           <p className="mt-2 text-sm text-red-600 dark:text-red-500">
@@ -363,14 +391,14 @@ const CreateTest = () => {
           <Button variant="text" color="red" id="closeTimeBtn" onClick={() => handleOpen(null)} className="mr-1">
             <span>Cancel</span>
           </Button>
-          <Button variant="gradient" color="green" onClick={() => hadleCreateNewTime()}>
+          <Button variant="gradient" className="bg-green-600" style={{ background: "green" }} color="green" onClick={() => hadleCreateNewTime()}>
             <span>Confirm</span>
           </Button>
         </DialogFooter>
       </Dialog>
 
-      <Dialog className="max-w-sm justify-center items-center" open={size === "Difficulty"} size={"sm"} handler={handleOpen}>
-        <DialogHeader>Create New Topic</DialogHeader>
+      <Dialog className="max-w-sm justify-center items-center" style={{ left: "100%", top: "20%", height: "fit-content" }} open={size === "Difficulty"} size={"sm"} handler={handleOpen}>
+        <DialogHeader>Create New Difficulty</DialogHeader>
         <DialogBody>
           <input className="  border-none  mb-3  rounded-md  px-3 py-2 w-100" style={{ background: "rgb(228 237 255)" }} placeholder="Enter New Difficulty" id="difficultyName" />
         </DialogBody>
@@ -378,13 +406,13 @@ const CreateTest = () => {
           <Button variant="text" color="red" id="closeDiffiBtn" onClick={() => handleOpen(null)} className="mr-1">
             <span>Cancel</span>
           </Button>
-          <Button variant="gradient" color="green" onClick={() => hadleCreateNewDifficulty()}>
+          <Button variant="gradient" color="green" style={{ background: "green" }} onClick={() => hadleCreateNewDifficulty()}>
             <span>Confirm</span>
           </Button>
         </DialogFooter>
       </Dialog>
 
-      <Dialog className="max-w-sm justify-center items-center" open={size === "ExamModal"} size="md" handler={handleOpen}>
+      <Dialog className="max-w-sm justify-center items-center" style={{ left: "100%", top: "20%", height: "fit-content" }} open={size === "ExamModal"} size="md" handler={handleOpen}>
         <DialogHeader>Create New Exam</DialogHeader>
         <DialogBody>
           <input className="  border-white   mb-3  rounded-md  px-3 py-2 w-100" style={{ background: "rgb(228 237 255)" }} placeholder="Enter Exam Name" id="ExamName" />
@@ -409,7 +437,7 @@ const CreateTest = () => {
           <Button variant="text" color="red" id="closeExamBtn" onClick={() => handleOpen(null)} className="mr-1">
             <span>Cancel</span>
           </Button>
-          <Button variant="gradient" color="green" onClick={() => hadleCreateNewExam()}>
+          <Button variant="gradient" color="green" style={{ background: "green" }} onClick={() => hadleCreateNewExam()}>
             <span>Confirm</span>
           </Button>
         </DialogFooter>

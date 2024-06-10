@@ -114,6 +114,29 @@ export const getAllUser = () => {
   };
 };
 
+export const getUserExists = async (mail) => {
+  let user;
+  try {
+    const response = await axios.post(API + "/getUserByMail", { mail });
+    user = response;
+  } catch (error) {
+    // Handle error and dispatch failure action
+    user = error.response;
+    console.log("error", error);
+  }
+  return user;
+};
+
+export const changePassword = async (email, newPassword) => {
+  try {
+    const response = await axios.post(API + "/change-password", { userEmail: email, newPassword });
+    return response;
+  } catch (error) {
+    console.error("Error changing password:", error);
+    return error.response;
+  }
+};
+
 export const logoutAction = () => ({
   type: "LOGOUT",
 });

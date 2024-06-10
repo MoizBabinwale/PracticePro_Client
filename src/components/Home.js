@@ -98,7 +98,7 @@ function Home() {
                         </div>
                         <div className="popular-card__body" style={{ padding: "24px 30px" }}>
                           <h3 className="text-24 text-f49 font-semibold">{item.testName}</h3>
-                          <div className="h-full mb-4 md:mb-3 text-16 text-888 h-full">
+                          <div className=" mb-4 md:mb-3 text-16 text-888 h-full">
                             {item.subjectIds.map((data, i) => (
                               <span>{data.name}</span>
                             ))}

@@ -28,7 +28,7 @@ function Navbar() {
         <GiHamburgerMenu onClick={() => setIsSearchOpen(false)} />
       </i>
       <Link className="Nav-link-tag logo" to="/">
-        Practice Pro
+        Practise Pro
       </Link>
       <ul className="nav-links">
         <i className="uil uil-times navCloseBtn" onClick={toggleNav}>
