@@ -359,7 +359,15 @@ const CreateTest = () => {
       </div>
 
       {enableEditQuestion && questions && (
-        <AddQuestions testId={testId} topicId={topicId} testData={questions} getAllQuestions={getAllQuestions} uassignedQuestions={uassignedQuestions} testList={testList} listTopics={listTopics} />
+        <AddQuestions
+          testId={testId}
+          topicId={topicId}
+          testData={questions}
+          getAllQuestions={getAllQuestions}
+          uassignedQuestions={uassignedQuestions}
+          testList={testList}
+          getAllUnassignedQue={getAllUnassignedQue}
+        />
       )}
       {/* <Dialog open={size === "xs" || size === "sm" || size === "md" || size === "lg" || size === "xl" || size === "xxl"} size={size || "md"} handler={handleOpen}> */}
 

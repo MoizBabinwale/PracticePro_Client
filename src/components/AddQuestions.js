@@ -11,7 +11,7 @@ import { MdDelete } from "react-icons/md";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 
-const AddQuestions = ({ testId, topicId, testData, getAllQuestions, uassignedQuestions, testList, listTopics }) => {
+const AddQuestions = ({ testId, topicId, testData, getAllQuestions, uassignedQuestions, testList, getAllUnassignedQue }) => {
   const [questionTitle, setQuestionTitle] = useState("");
   const [questionImage, setQuestionImage] = useState({});
   const [quesionCreated, setQuesionCreated] = useState(false);
@@ -440,8 +440,8 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions, uassignedQue
       const response = await axios.post(TEST_API + "/assignQuestionToTestsAndSubjects", data, testHeaders);
       if (response) {
         console.log("response ", response);
-        // getAllQuestions();
         Swal.fire("Your Question Has been assigned to Test.", "success");
+        getAllUnassignedQue();
       }
     } catch (error) {
       console.log("error ", error);

@@ -86,6 +86,7 @@ function Login() {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const handleSubmit = async () => {
+    // e.preventDefault();
     if (isSignup) {
       dispatch(login(email, password, authContext));
     } else {
@@ -219,8 +220,11 @@ function Login() {
     });
   };
 
-  const handleEnter = () => {
-    handleSubmit();
+  const handleEnter = (e) => {
+    console.log("e.keycode ", e.keyCode);
+    if (e.keyCode === 13) {
+      handleSubmit();
+    }
   };
   return (
     <div className="container">
@@ -263,7 +267,7 @@ function Login() {
                 className="form-control"
                 placeholder="Enter Password"
                 value={password}
-                onKeyDown={handleEnter}
+                onKeyDown={(e) => handleEnter(e)}
                 onChange={(e) => setPassword(e.target.value)}
               />
               {seenPass ? (
@@ -279,7 +283,7 @@ function Login() {
               type="button"
               disabled={isLoading}
               className="btn w-full text-white items-center justify-center font-semibold bg-blue-700 hover:bg-blue-800"
-              onClick={handleSubmit}
+              onClick={() => handleSubmit()}
               style={{ display: "flex", alignItems: "center" }}
             >
               {isSignup ? "Login" : "SignUp"}

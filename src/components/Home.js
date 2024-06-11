@@ -13,7 +13,7 @@ function Home() {
   const [testData, setTestData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const { isPremiumUser } = useContext(AuthContext);
+  const { isPremiumUser, isLoggedIn } = useContext(AuthContext);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(resetResult());
@@ -34,6 +34,14 @@ function Home() {
   };
 
   const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    if (isLoggedIn) {
+      navigate("/giveTest");
+    } else {
+      navigate("/login");
+    }
+  };
 
   return (
     <>
@@ -91,7 +99,7 @@ function Home() {
                 <>
                   {testData.length === 0 && <div>No Test Data Added!</div>}
                   {testData.map((item, index) => (
-                    <div key={index} className={`slick-slide px-2 md:w-[380px] felx   md:rounded-md md:col-span-1 h-mb-100 cursor-pointer`} onClick={() => navigate("/giveTest")}>
+                    <div key={index} className={`slick-slide px-2 md:w-[380px] felx   md:rounded-md md:col-span-1 h-mb-100 cursor-pointer`} onClick={() => handleNavigate()}>
                       <div className="popular-card flex flex-col relative h-full " style={{ boxShadow: "0 10px 15px 0 rgba(49,45,43,.1)" }}>
                         <div className="popular-card__head bg-orange-200" style={{ padding: "13px 30px 10px" }}>
                           <div className="line bg-[#f98d49] h-1 w-full absolute top-0 left-0"></div>

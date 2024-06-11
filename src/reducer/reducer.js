@@ -7,6 +7,7 @@ const initialState = {
   isLoading: false,
   isLoggedIn: null,
   responseData: null, // Add responseData property to your initial state
+  isLoginFail: false,
   // ...other properties
 };
 const initialSingupState = {
