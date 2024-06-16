@@ -81,7 +81,7 @@ function BuyPremiumPage() {
       key,
       amount: order.amount,
       currency: "INR",
-      name: "6 Pack Programmer",
+      name: "PRACTISE PRO",
       description: "Tutorial of RazorPay",
       image: "https://avatars.githubusercontent.com/u/25058652?v=4",
       order_id: order.id,
@@ -120,7 +120,7 @@ function BuyPremiumPage() {
                 <h3 className="mb-4 text-2xl font-semibold">Starter</h3>
                 <p className="font-light text-gray-500 sm:text-lg dark:text-gray-400">Best option for personal use & for your next project.</p>
                 <div className="flex justify-center items-baseline my-8">
-                  <span className="mr-2 text-5xl font-extrabold">$29</span>
+                  <span className="mr-2 text-5xl font-extrabold">&#x20b9;149</span>
                   <span className="text-gray-500 dark:text-gray-400">/month</span>
                 </div>
 
@@ -166,7 +166,7 @@ function BuyPremiumPage() {
                   <button
                     className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                     data-pack="basic"
-                    data-amount="200"
+                    data-amount="149"
                     onClick={(e) => getToken(e)}
                   >
                     Buy
@@ -178,7 +178,7 @@ function BuyPremiumPage() {
                 <h3 className="mb-4 text-2xl font-semibold">Company</h3>
                 <p className="font-light text-gray-500 sm:text-lg dark:text-gray-400">Relevant for multiple users, extended & premium support.</p>
                 <div className="flex justify-center items-baseline my-8">
-                  <span className="mr-2 text-5xl font-extrabold">$99</span>
+                  <span className="mr-2 text-5xl font-extrabold">&#x20b9;549</span>
                   <span className="text-gray-500 dark:text-gray-400">/month</span>
                 </div>
 
@@ -219,24 +219,24 @@ function BuyPremiumPage() {
                       Free updates: <span className="font-semibold">24 months</span>
                     </span>
                   </li>
-                  <div className="justify-center mt-8 flex">
-                    <button
-                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                      data-pack="medium"
-                      data-amount="400"
-                      onClick={(e) => getToken(e)}
-                    >
-                      Buy
-                    </button>
-                  </div>
                 </ul>
+                <div className="justify-center mt-8 flex">
+                  <button
+                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    data-pack="medium"
+                    data-amount="549"
+                    onClick={(e) => getToken(e)}
+                  >
+                    Buy
+                  </button>
+                </div>
               </div>
 
               <div className="flex flex-col p-6 mx-auto max-w-lg text-center text-gray-900 bg-white rounded-lg border border-gray-100 shadow dark:border-gray-600 xl:p-8 dark:bg-gray-800 dark:text-white">
                 <h3 className="mb-4 text-2xl font-semibold">Enterprise</h3>
                 <p className="font-light text-gray-500 sm:text-lg dark:text-gray-400">Best for large scale uses and extended redistribution rights.</p>
                 <div className="flex justify-center items-baseline my-8">
-                  <span className="mr-2 text-5xl font-extrabold">$499</span>
+                  <span className="mr-2 text-5xl font-extrabold">&#x20b9;1099</span>
                   <span className="text-gray-500 dark:text-gray-400">/month</span>
                 </div>
 
@@ -282,7 +282,7 @@ function BuyPremiumPage() {
                   <button
                     className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                     data-pack="pro"
-                    data-amount="600"
+                    data-amount="1099"
                     onClick={(e) => getToken(e)}
                   >
                     Buy

@@ -26,6 +26,10 @@ const Footer = () => {
           <div class="w-full lg:w-6/12 px-4">
             <h4 class="text-3xl fonat-semibold text-blueGray-700">Let's keep in touch!</h4>
             <h5 class="text-lg mt-0 mb-2 text-blueGray-600">Find us on any of these platforms, we respond 1-2 business days.</h5>
+            <p>
+              <b>Contact Number</b>
+            </p>
+            <p>+91 8793021099</p>
             <div class="mt-6 lg:mb-0 mb-6 flex">
               <button
                 class="flex  bg-white text-lightBlue-400 shadow-lg font-normal h-10 w-10 items-center justify-center align-center rounded-full outline-none focus:outline-none mr-2"
