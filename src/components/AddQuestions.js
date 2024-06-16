@@ -30,7 +30,6 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions, uassignedQue
 
   useEffect(() => {
     if (testData) {
-      console.log("testData ", testData);
       setQuestionData(testData);
     }
   }, [testData]);

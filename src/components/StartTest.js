@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { IoIosHome } from "react-icons/io";
 import Swal from "sweetalert2";
 import Confetti from "react-confetti";
+import useWindowSize from "react-use/lib/useWindowSize";
 
 function StartTest() {
   const [testData, setTestData] = useState({});
@@ -23,8 +24,8 @@ function StartTest() {
 
   useEffect(() => {
     const testInfo = JSON.parse(localStorage.getItem("testData"));
-    var savedTimeLeft = parseInt(localStorage.getItem("timeLeft"), 10) || 0;
-    const initialTimeLeft = testInfo?.timeName * 60 || 0; // Convert minutes to seconds
+    var savedTimeLeft = parseInt(localStorage.getItem("timeLeft"), 10) || 600;
+    const initialTimeLeft = testInfo?.timeName ? testInfo.timeName * 60 : 600; // Convert minutes to seconds
 
     if (savedTimeLeft === 0) {
       localStorage.setItem("timeLeft", (testInfo?.timeName * 60).toString());
@@ -71,6 +72,87 @@ function StartTest() {
         testName: "Demo Test",
       };
       setTestData(demoTestInfo);
+      // Setting 5 general knowledge questions
+      const demoQuestions = [
+        {
+          _id: "66598337ca26bd8ef579a3c1",
+          text: "What is the capital of France?",
+          difficultyLevel: "65e013bc6b8fc10cabbcf490",
+          optionType: "text",
+          options: [
+            { _id: "66598337ca26bd8ef579a3c2", text: "Berlin", isCorrect: false },
+            { _id: "66598337ca26bd8ef579a3c3", text: "Madrid", isCorrect: false },
+            { _id: "66598337ca26bd8ef579a3c4", text: "Paris", isCorrect: true },
+            { _id: "66598337ca26bd8ef579a3c5", text: "Rome", isCorrect: false },
+          ],
+          subjectId: "665970d1e1395361e2180b2d",
+          testId: "665970e4e1395361e2180b30",
+          __v: 0,
+        },
+        {
+          _id: "66598337ca26bd8ef579a3c6",
+          text: "Who wrote 'Romeo and Juliet'?",
+          difficultyLevel: "65e013bc6b8fc10cabbcf490",
+          optionType: "text",
+          options: [
+            { _id: "66598337ca26bd8ef579a3c7", text: "Mark Twain", isCorrect: false },
+            { _id: "66598337ca26bd8ef579a3c8", text: "Jane Austen", isCorrect: false },
+            { _id: "66598337ca26bd8ef579a3c9", text: "William Shakespeare", isCorrect: true },
+            { _id: "66598337ca26bd8ef579a3ca", text: "Charles Dickens", isCorrect: false },
+          ],
+          subjectId: "665970d1e1395361e2180b2d",
+          testId: "665970e4e1395361e2180b30",
+          __v: 0,
+        },
+        {
+          _id: "66598337ca26bd8ef579a3cb",
+          text: "What is the largest planet in our Solar System?",
+          difficultyLevel: "65e013bc6b8fc10cabbcf490",
+          optionType: "text",
+          options: [
+            { _id: "66598337ca26bd8ef579a3cc", text: "Earth", isCorrect: false },
+            { _id: "66598337ca26bd8ef579a3cd", text: "Mars", isCorrect: false },
+            { _id: "66598337ca26bd8ef579a3ce", text: "Jupiter", isCorrect: true },
+            { _id: "66598337ca26bd8ef579a3cf", text: "Saturn", isCorrect: false },
+          ],
+          subjectId: "665970d1e1395361e2180b2d",
+          testId: "665970e4e1395361e2180b30",
+          __v: 0,
+        },
+        {
+          _id: "66598337ca26bd8ef579a3d0",
+          text: "How many continents are there?",
+          difficultyLevel: "65e013bc6b8fc10cabbcf490",
+          optionType: "text",
+          options: [
+            { _id: "66598337ca26bd8ef579a3d1", text: "Five", isCorrect: false },
+            { _id: "66598337ca26bd8ef579a3d2", text: "Six", isCorrect: false },
+            { _id: "66598337ca26bd8ef579a3d3", text: "Seven", isCorrect: true },
+            { _id: "66598337ca26bd8ef579a3d4", text: "Eight", isCorrect: false },
+          ],
+          subjectId: "665970d1e1395361e2180b2d",
+          testId: "665970e4e1395361e2180b30",
+          __v: 0,
+        },
+        {
+          _id: "66598337ca26bd8ef579a3d5",
+          text: "What is the boiling point of water?",
+          difficultyLevel: "65e013bc6b8fc10cabbcf490",
+          optionType: "text",
+          options: [
+            { _id: "66598337ca26bd8ef579a3d6", text: "90°C", isCorrect: false },
+            { _id: "66598337ca26bd8ef579a3d7", text: "100°C", isCorrect: true },
+            { _id: "66598337ca26bd8ef579a3d8", text: "110°C", isCorrect: false },
+            { _id: "66598337ca26bd8ef579a3d9", text: "120°C", isCorrect: false },
+          ],
+          subjectId: "665970d1e1395361e2180b2d",
+          testId: "665970e4e1395361e2180b30",
+          __v: 0,
+        },
+      ];
+
+      setQuestions(demoQuestions);
+
       return;
     }
     setTestData(testInfo);
@@ -149,16 +231,29 @@ function StartTest() {
     }
   }, [fetchResult]);
   const handleSubmit = () => {
-    document.getElementById("submitTest").disabled = true;
-    try {
-      const answerData = {
-        questions,
-      };
-      dispatch(evaluateResult(answerData));
-      localStorage.removeItem("timeLeft");
-      localStorage.removeItem("testData");
-    } catch (error) {
-      console.log("error ", error);
+    const testInfo = JSON.parse(localStorage.getItem("testData"));
+
+    if (testInfo === "DemoTest") {
+      let newScore = 0;
+      questions.forEach((question) => {
+        const selectedOption = question.options.find((option) => option._id === question.selectedOption);
+        if (selectedOption && selectedOption.isCorrect) {
+          newScore += 1;
+        }
+      });
+      setResultFetched({ score: newScore });
+    } else {
+      document.getElementById("submitTest").disabled = true;
+      try {
+        const answerData = {
+          questions,
+        };
+        dispatch(evaluateResult(answerData));
+        localStorage.removeItem("timeLeft");
+        localStorage.removeItem("testData");
+      } catch (error) {
+        console.log("error ", error);
+      }
     }
   };
 
@@ -178,12 +273,12 @@ function StartTest() {
   const handleResetData = () => {
     dispatch(resetResult());
   };
-
+  const { width, height } = useWindowSize();
   return (
     <div className="container">
       {gettingData || sendingData || resultFetched ? (
         <div className={`top-0 left-0 w-full h-full flex flex-col justify-center items-center ${resultFetched ? "flex mt-36" : "fixed"}`}>
-          <Confetti width={100} height={100} />
+          <Confetti width={width} height={height} recycle={false} />
           {gettingData && <div className="font-semibold">Getting Result Ready...!</div>}
           {sendingData && <div className="font-semibold">Sending Data...</div>}
           {resultFetched && (

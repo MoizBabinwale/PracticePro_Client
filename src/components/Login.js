@@ -221,7 +221,6 @@ function Login() {
   };
 
   const handleEnter = (e) => {
-    console.log("e.keycode ", e.keyCode);
     if (e.keyCode === 13) {
       handleSubmit();
     }

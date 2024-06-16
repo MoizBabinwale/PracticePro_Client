@@ -110,6 +110,7 @@ const CreateTest = () => {
 
   const getTopicName = async (testId) => {
     try {
+      console.log("testHeaders ", testHeaders);
       const response = await axios.get(TEST_API + `/getSubjects/${testId}`, testHeaders); // Await the axios request
       if (response) {
         console.log(response);
