@@ -37,7 +37,6 @@ function AllTests() {
         data: item,
       },
     });
-    console.log("item ", item);
   };
 
   const deleteQuestion = async (id) => {

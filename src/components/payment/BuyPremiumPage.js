@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 
 function BuyPremiumPage() {
   const [token, setToken] = useState("");
-  const [form, setForm] = useState({ amount: "", name: "", email: "", phone: "", subscribefor: "" });
+  const [form, setForm] = useState({ amount: "", name: "", email: "", phone: "", subscribefor: "", id: "" });
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(false);
   const { isPremiumUser, setSubscriptionSelected } = useContext(AuthContext);
@@ -34,6 +34,7 @@ function BuyPremiumPage() {
         phone: userInfo.phone,
         userToken: userData.token,
         subscribefor: "",
+        id: userInfo._id,
       };
       setForm(formData);
     } else {
@@ -58,7 +59,7 @@ function BuyPremiumPage() {
     }));
     localStorage.setItem("subscriptionFor", subscribefor);
     setSubscriptionSelected(subscribefor);
-    checkoutHandler(amount, form?.name);
+    checkoutHandler(amount, form?.name, form?.id);
     //   setLoading(false);
     // } catch (error) {
     //   console.log("error ", error);
@@ -66,7 +67,7 @@ function BuyPremiumPage() {
     // }
   };
 
-  const checkoutHandler = async (amount, userName) => {
+  const checkoutHandler = async (amount, userName, userId) => {
     const {
       data: { key },
     } = await axios.get(API + "/getkey");
@@ -76,6 +77,7 @@ function BuyPremiumPage() {
     } = await axios.post(API + "/checkout", {
       amount,
       userName,
+      userId,
     });
     const options = {
       key,
@@ -111,9 +113,7 @@ function BuyPremiumPage() {
           <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
             <div className="mx-auto max-w-screen-md text-center mb-8 lg:mb-12">
               <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Designed for business teams like yours</h2>
-              <p className="mb-5 font-light text-gray-500 sm:text-xl dark:text-gray-400">
-                Here at Flowbite we focus on markets where technology, innovation, and capital can unlock long-term value and drive economic growth.
-              </p>
+              <p className="mb-5 font-light text-gray-500 sm:text-xl dark:text-gray-400">Here at Flowbite we focus on markets where technology, innovation, and capital can unlock long-term value and drive economic growth.</p>
             </div>
             <div className="space-y-8 lg:grid lg:grid-cols-3 sm:gap-6 xl:gap-10 lg:space-y-0">
               <div className="flex flex-col p-6 mx-auto max-w-lg text-center text-gray-900 bg-white rounded-lg border border-gray-100 shadow dark:border-gray-600 xl:p-8 dark:bg-gray-800 dark:text-white">
@@ -166,7 +166,7 @@ function BuyPremiumPage() {
                   <button
                     className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                     data-pack="basic"
-                    data-amount="149"
+                    data-amount="1"
                     onClick={(e) => getToken(e)}
                   >
                     Buy

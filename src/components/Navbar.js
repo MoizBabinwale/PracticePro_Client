@@ -54,6 +54,11 @@ function Navbar() {
                     All Tests
                   </Link>
                 </li>
+                <li onClick={toggleNav}>
+                  <Link className="Nav-link-tag" to="/allPayments">
+                    All Payments
+                  </Link>
+                </li>
               </>
             )}
             {!isPremiumUser && (
