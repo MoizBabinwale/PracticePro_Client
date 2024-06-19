@@ -151,7 +151,7 @@ function GiveTest() {
   };
 
   return (
-    <div className="container ">
+    <div className="container pt-4 ">
       {loading ? (
         <Loader />
       ) : (
@@ -212,17 +212,7 @@ function GiveTest() {
             </div>
             {/* <TextField type="number" value={time} onChange={handleTimeChange} label="Time (in minutes)" variant="standard" placeholder="Enter Time" /> */}
             <div className="col-lg-8 my-3">
-              <TextField
-                type="number"
-                className="w-full"
-                min="1"
-                id="numberOfQuestions"
-                disabled={!premiumUser}
-                onKeyDown={handleNumQuestionsChange}
-                label="Number of Questions"
-                variant="standard"
-                placeholder="Enter Number of Questions"
-              />
+              <TextField type="number" className="w-full" min="1" id="numberOfQuestions" disabled={!premiumUser} onKeyDown={handleNumQuestionsChange} label="Number of Questions" variant="standard" placeholder="Enter Number of Questions" />
             </div>
 
             <div className="col-lg-8 my-3">

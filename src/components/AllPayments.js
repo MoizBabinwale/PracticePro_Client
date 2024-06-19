@@ -28,12 +28,12 @@ function AllPayments() {
   }, []);
 
   return (
-    <div>
+    <div className="container pt-4">
       {loading ? (
         <Loader />
       ) : (
-        <div className="container">
-          <div className="table-responsive">
+        <div className="">
+          <div className="table-responsive ">
             <table className="table table-striped table-bordered">
               <thead>
                 <tr>
