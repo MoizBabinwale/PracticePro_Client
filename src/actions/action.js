@@ -180,3 +180,21 @@ export const getAllPaymentStatus = async () => {
     console.log("error ", error);
   }
 };
+
+export const getAllUsers = async () => {
+  try {
+    // const user = JSON.parse(localStorage.getItem("Profile"));
+    // const subscribeFor = localStorage.getItem("subscriptionFor");
+    // const id = user?.data?._id;
+    const response = await axios.get(API + "/getAllUsersData", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }); // Await the axios request
+    if (response) {
+      return response.data;
+    }
+  } catch (error) {
+    console.log("error ", error);
+  }
+};

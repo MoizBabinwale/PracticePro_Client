@@ -59,6 +59,11 @@ function Navbar() {
                     All Payments
                   </Link>
                 </li>
+                <li onClick={toggleNav}>
+                  <Link className="Nav-link-tag" to="/AllUsers">
+                    All Users
+                  </Link>
+                </li>
               </>
             )}
             {!isPremiumUser && (
