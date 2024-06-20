@@ -172,8 +172,8 @@ function Login() {
     Swal.fire({
       title: "Enter New Password",
       html: `
-        <input type="password" id="newPassword" class="swal2-input" placeholder="New Password">
-        <input type="password" id="confirmPassword" class="swal2-input" placeholder="Confirm Password">
+        <input type="password" id="newPassword" className="swal2-input" placeholder="New Password">
+        <input type="password" id="confirmPassword" className="swal2-input" placeholder="Confirm Password">
       `,
       focusConfirm: false,
       preConfirm: () => {
@@ -227,95 +227,99 @@ function Login() {
   };
   return (
     <div className="container">
-      <div className="d-flex justify-content-center align-items-center vh-100 pt-16 px-3 md:!justify-around md:flex">
-        <img className="hidden md:block" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/authentication/illustration.svg" alt="illustration"></img>
-        {!verfiyEmail ? (
-          <div className="w-96 md:!w-[600px]  p-4 rounded border shadow-md ">
-            <h2 className="text-center mb-4" style={{ color: "black" }}>
-              {isSignup ? "Login" : "Signup"}
-            </h2>
-
-            {!isSignup && (
-              <>
-                <div className="mb-3">
-                  <label htmlFor="name" className="form-label">
-                    Name
-                  </label>
-                  <input type="text" className="form-control" placeholder="Enter Name" id="Name" value={userName} onChange={(e) => setName(e.target.value)} />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="phhone" className="form-label">
-                    Phone Number
-                  </label>
-                  <input type="number" className="form-control" placeholder="Enter Number" id="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
-                </div>
-              </>
-            )}
-            <div className="mb-3">
-              <label htmlFor="email" className="form-label">
-                Your Email
-              </label>
-              <input type="email" className="form-control" id="email" placeholder="Enter Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="password" className="form-label">
-                Password
-              </label>
+      <div className="flex items-center justify-around h-screen p-4">
+        <img className="hidden md:block h-100" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/authentication/illustration.svg" alt="illustration"></img>
+        <div className="w-full max-w-md">
+          <h2 className="text-center text-2xl font-bold mb-4 text-black">{!verfiyEmail ? <>{isSignup ? "Login" : "Signup"}</> : <>OTP Verification</>}</h2>
+          {!isSignup && (
+            <>
+              <div className="mb-3">
+                <label htmlFor="name" className="form-label">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                  placeholder="Enter Name"
+                  id="Name"
+                  value={userName}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="phhone" className="form-label">
+                  Phone Number
+                </label>
+                <input
+                  type="number"
+                  className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                  placeholder="Enter Number"
+                  id="Phone"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                />
+              </div>
+            </>
+          )}
+          <div className="mb-3">
+            <label htmlFor="email" className="form-label">
+              Your Email
+            </label>
+            <input
+              type="email"
+              className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+              id="email"
+              placeholder="Enter Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="password" className="form-label">
+              Password
+            </label>
+            <div className="relative">
               <input
                 type={seenPass ? "text" : "password"}
-                className="form-control"
+                className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                 placeholder="Enter Password"
                 value={password}
                 onKeyDown={(e) => handleEnter(e)}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              {seenPass ? (
-                <AiOutlineEye onClick={() => setSeenPass(!seenPass)} style={{ backgroundColor: "#7d7dad", position: "relative", top: "-30px", left: "92%", borderRadius: "25%", fontSize: "larger" }} />
-              ) : (
-                <AiOutlineEyeInvisible
-                  onClick={() => setSeenPass(!seenPass)}
-                  style={{ backgroundColor: "transparent", position: "relative", top: "-30px", left: "92%", borderRadius: "25%", fontSize: "larger" }}
-                />
-              )}
-            </div>
-            <button
-              type="button"
-              disabled={isLoading}
-              className="btn w-full text-white items-center justify-center font-semibold bg-blue-700 hover:bg-blue-800"
-              onClick={() => handleSubmit()}
-              style={{ display: "flex", alignItems: "center" }}
-            >
-              {isSignup ? "Login" : "SignUp"}
-              {loginState.isLoading && <Rings height="20" width="50" color="white" radius="6" wrapperStyle={{ marginLeft: "10px" }} wrapperclassName="" visible={true} ariaLabel="rings-loading" />}
-              {isLoading && <Loader />}
-            </button>
-            <div className="w-100 flex justify-between" style={{ cursor: "pointer" }}>
-              <p onClick={togglePage} className="text-black mt-2 ">
-                {isSignup ? "Don't have an Account?" : "Alredy have an Account!"}
-              </p>
-              {isSignup && (
-                <span onClick={toggleForgotPassword} className="mt-2 text-blue-500">
-                  Forgot Password?
-                </span>
-              )}
-            </div>
-            {loginState.isLoggedIn && <p style={{ color: "green" }}>Login Successfully!</p>}
-            {loginState.isLoading === false && loginState.isLoggedIn === false && <p style={{ color: "red" }}>Login Failed !</p>}
-          </div>
-        ) : (
-          <div className="flex flex-col w-96">
-            <>
-              <h2>OTP Verification</h2>
-              <span className="text-red-600 ">*Please do Not Reload the Page!</span>
-              <input className="mt-3  border-none p-2" type="text" placeholder="Enter OTP" value={otp} onChange={(e) => setOTP(e.target.value)} maxLength={6} />
-              <button className="p-2 mt-3 bg-blue-500 hover:bg-blue-800 text-white justify-center " onClick={handleVerify} disabled={isLoading}>
-                {isLoading ? "Verifying..." : "Verify"}
+              <button className="absolute top-0 right-0 mt-3 mr-3" onClick={() => setSeenPass(!seenPass)}>
+                {seenPass ? (
+                  <AiOutlineEye style={{ backgroundColor: "#7d7dad", top: "-30px", right: "0", borderRadius: "25%", fontSize: "larger" }} />
+                ) : (
+                  <AiOutlineEyeInvisible style={{ backgroundColor: "transparent", top: "-30px", right: "0", borderRadius: "25%", fontSize: "larger" }} />
+                )}
               </button>
-            </>
-
-            {/* {verificationResult && <p>{verificationResult}</p>} */}
+            </div>
           </div>
-        )}
+          <button
+            className="w-full text-white  hover:bg-blue-800 bg-blue-700 font-bold py-2 px-4 rounded justify-center"
+            type="button"
+            disabled={isLoading}
+            onClick={() => handleSubmit()}
+            style={{ display: "flex", alignItems: "center", background: "#5c5cff" }}
+          >
+            {!verfiyEmail ? <>{isSignup ? "Login" : "SignUp"}</> : <>Verify</>}
+            {loginState.isLoading && <Rings height="20" width="50" color="white" radius="6" wrapperStyle={{ marginLeft: "10px" }} wrapperclassName="" visible={true} ariaLabel="rings-loading" />}
+            {isLoading && <Loader />}
+          </button>
+          <div className="flex justify-between">
+            <p className="text-black mt-2 cursor-pointer" onClick={togglePage}>
+              {!verfiyEmail ? <>{isSignup ? "Don't have an Account?" : "Alredy have an Account!"}</> : <>Resend OTP</>}
+            </p>
+            {isSignup && (
+              <span className="mt-2 text-blue-500 cursor-pointer" onClick={toggleForgotPassword}>
+                Forgot Password?
+              </span>
+            )}
+          </div>
+          {loginState.isLoggedIn && <p className="text-green-600">Login Successfully!</p>}
+          {loginState.isLoading === false && loginState.isLoggedIn === false && <p className="text-red-600">Login Failed!</p>}
+        </div>
       </div>
     </div>
   );

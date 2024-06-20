@@ -90,32 +90,32 @@ function AllTests() {
       {loading ? (
         <Loader />
       ) : (
-        <div class=" mx-auto p-4">
-          <table class="min-w-full bg-white">
+        <div className=" mx-auto p-4">
+          <table className="min-w-full bg-white">
             <thead>
               <tr>
-                <th class="py-2 px-4 border-b-2 border-gray-300">Test Name/Subjects</th>
-                <th class="py-2 px-4 border-b-2 border-gray-300 " style={{ textAlign: "end" }}>
+                <th className="py-2 px-4 border-b-2 border-gray-300">Test Name/Subjects</th>
+                <th className="py-2 px-4 border-b-2 border-gray-300 " style={{ textAlign: "end" }}>
                   Actions
                 </th>
               </tr>
             </thead>
             <tbody>
               {testData.map((item, key) => (
-                <tr key={key} class="bg-gray-100">
-                  <td class="py-4 px-6 border-b border-gray-300">
-                    <div class="flex flex-col">
-                      <span class="text-xl font-bold">{item.testName} </span>
+                <tr key={key} className="bg-gray-100">
+                  <td className="py-4 px-6 border-b border-gray-300">
+                    <div className="flex flex-col">
+                      <span className="text-xl font-bold">{item.testName} </span>
                       {item.subjectIds.map((data, i) => (
-                        <span class="text-gray-600">{data.name}</span>
+                        <span className="text-gray-600">{data.name}</span>
                       ))}
                     </div>
                   </td>
-                  <td class="py-4 px-6 border-b border-gray-300 text-right">
-                    <button class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600" onClick={() => handleEdit(item)}>
+                  <td className="py-4 px-6 border-b border-gray-300 text-right">
+                    <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600" onClick={() => handleEdit(item)}>
                       Edit
                     </button>
-                    <button class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 ml-2" onClick={() => handleDelete(item)}>
+                    <button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 ml-2" onClick={() => handleDelete(item)}>
                       Delete
                     </button>
                   </td>

@@ -33,6 +33,7 @@
     "redux-thunk": "^3.1.0",
     "styled-components": "^6.1.8",
     "sweetalert2": "^11.10.5",
+    "tw-elements-react": "^1.0.0-alpha-end",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -60,6 +61,6 @@
     ]
   },
   "devDependencies": {
-    "tailwindcss": "^3.4.1"
+    "tailwindcss": "^3.4.4"
   }
 }

@@ -20,7 +20,10 @@
 }
 
 .section1_contianer {
-  margin-top: 62px;
+  margin-top: 70px;
+}
+.bg-black {
+  background: transparent;
 }
 .marquee {
   position: absolute;
