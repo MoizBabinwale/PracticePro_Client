@@ -20,7 +20,7 @@ const Footer = () => {
   const loc = useLocation();
 
   return (
-    <footer className="relative bg-[#4a98f7] pt-8 pb-6 mt-6">
+    <footer className="relative bg-[#4a98f7] pt-8 pb-6 mt-6" style={{ marginTop: loc.pathname.includes("/startTest") ? "200px" : "" }}>
       <div className="container mx-auto px-4">
         <div className="flex flex-wrap text-left lg:text-left">
           <div className="w-full lg:w-6/12 px-4">
@@ -31,16 +31,10 @@ const Footer = () => {
             </p>
             <p>+91 8793021099</p>
             <div className="mt-6 lg:mb-0 mb-6 flex">
-              <button
-                className="flex  bg-white text-lightBlue-400 shadow-lg font-normal h-10 w-10 items-center justify-center align-center rounded-full outline-none focus:outline-none mr-2"
-                type="button"
-              >
+              <button className="flex  bg-white text-lightBlue-400 shadow-lg font-normal h-10 w-10 items-center justify-center align-center rounded-full outline-none focus:outline-none mr-2" type="button">
                 <FaXTwitter />
               </button>
-              <button
-                className="flex  bg-white text-lightBlue-600 shadow-lg font-normal h-10 w-10 items-center justify-center align-center rounded-full outline-none focus:outline-none mr-2"
-                type="button"
-              >
+              <button className="flex  bg-white text-lightBlue-600 shadow-lg font-normal h-10 w-10 items-center justify-center align-center rounded-full outline-none focus:outline-none mr-2" type="button">
                 <FaFacebook />
               </button>
               <button className="flex  bg-white text-pink-400 shadow-lg font-normal h-10 w-10 items-center justify-center align-center rounded-full outline-none focus:outline-none mr-2" type="button">
@@ -82,10 +76,7 @@ const Footer = () => {
                 <span className="block uppercase text-blueGray-500 text-sm font-semibold mb-2">Other Resources</span>
                 <ul className="list-unstyled">
                   <li>
-                    <a
-                      className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm"
-                      href="https://github.com/creativetimofficial/notus-js/blob/main/LICENSE.md?ref=njs-profile"
-                    >
+                    <a className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm" href="https://github.com/creativetimofficial/notus-js/blob/main/LICENSE.md?ref=njs-profile">
                       MIT License
                     </a>
                   </li>

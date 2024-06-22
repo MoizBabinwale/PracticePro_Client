@@ -18,7 +18,6 @@ function AllTests() {
       setLoading(true);
       const response = await axios.get(TEST_API + "/getAllTest"); // Await the axios request
       if (response) {
-        console.log("response.data.Tests ", response.data.Tests);
         setTestData(response.data.Tests);
       }
       setLoading(false);

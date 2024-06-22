@@ -131,7 +131,6 @@ function GiveTest() {
 
   const getTopicName = async (testId) => {
     try {
-      console.log("testHeaders ", testHeaders);
       const response = await axios.get(TEST_API + `/getSubjects/${testId}`, testHeaders); // Await the axios request
       if (response) {
         setListTopics(response.data);
