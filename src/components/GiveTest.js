@@ -5,7 +5,7 @@ import { TEST_API } from "../actions/api";
 import axios from "axios";
 import Loader from "./Loader";
 import { useDispatch, useSelector } from "react-redux";
-import { getDifficultyLevel, getTimeLimits, testHeaders } from "../actions/testAction";
+import { getDifficultyLevel, getTimeLimits, resetResult, testHeaders } from "../actions/testAction";
 import manImage from "../assets/man.png";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -86,6 +86,8 @@ function GiveTest() {
 
   const startDemoTest = () => {
     localStorage.setItem("testData", JSON.stringify("DemoTest"));
+
+    // dispatch(resetResult());
     navigate("/startTest");
   };
 
@@ -95,6 +97,7 @@ function GiveTest() {
       startDemoTest();
       return;
     }
+    dispatch(resetResult());
     // Handle starting the test
     var numberOfQuestions = document.getElementById("numberOfQuestions").value;
     if (!numberOfQuestions || !testId || !topicId || !timeId || !difficultyId) {
@@ -209,9 +212,22 @@ function GiveTest() {
                 disabled={!premiumUser}
               />
             </div>
-            {/* <TextField type="number" value={time} onChange={handleTimeChange} label="Time (in minutes)" variant="standard" placeholder="Enter Time" /> */}
+            {/* < type="number" value={time} onChange={handleTimeChange} label="Time (in minutes)" variant="standard" placeholder="Enter Time" /> */}
             <div className="col-lg-8 my-3">
-              <TextField type="number" className="w-full" min="1" id="numberOfQuestions" disabled={!premiumUser} onKeyDown={handleNumQuestionsChange} label="Number of Questions" variant="standard" placeholder="Enter Number of Questions" />
+              <TextField
+                type="number"
+                className="w-full"
+                min="1"
+                id="numberOfQuestions"
+                disabled={!premiumUser}
+                // onMouseDown={(e) => e.preventDefault()} // Add this line
+                // onMouseUp={(e) => e.preventDefault()} // Add this line
+                onWheel={(e) => e.preventDefault()}
+                onKeyDown={handleNumQuestionsChange}
+                label="Number of Questions"
+                variant="standard"
+                placeholder="Enter Number of Questions"
+              />
             </div>
 
             <div className="col-lg-8 my-3">

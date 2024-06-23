@@ -228,6 +228,8 @@ function StartTest() {
       setResultFetched(fetchResult.result);
       // setGettingData(fetchResult.retrievingResult);
       // setSendingData(fetchResult.sendingData);
+    } else {
+      setResultFetched({});
     }
   }, [fetchResult]);
   const handleSubmit = () => {
@@ -273,6 +275,7 @@ function StartTest() {
   const handleResetData = () => {
     dispatch(resetResult());
   };
+
   const { width, height } = useWindowSize();
   return (
     <div className="container">
