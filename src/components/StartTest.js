@@ -24,30 +24,37 @@ function StartTest() {
 
   useEffect(() => {
     const testInfo = JSON.parse(localStorage.getItem("testData"));
-    var savedTimeLeft = parseInt(localStorage.getItem("timeLeft"), 10) || 600;
-    const initialTimeLeft = testInfo?.timeName ? testInfo.timeName * 60 : 600; // Convert minutes to seconds
+    if (testInfo) {
+      const initialTimeLeft = testInfo?.timeName ? testInfo.timeName * 60 : 600; // Convert minutes to seconds
+      let savedTimeLeft = parseInt(localStorage.getItem("timeLeft"), 10);
 
-    if (savedTimeLeft === 0) {
-      localStorage.setItem("timeLeft", (testInfo?.timeName * 60).toString());
-      savedTimeLeft = testInfo?.timeName * 60;
-    }
+      if (!savedTimeLeft || savedTimeLeft <= 0) {
+        savedTimeLeft = initialTimeLeft;
+        localStorage.setItem("timeLeft", savedTimeLeft.toString());
+      }
 
-    setTimeLimit(initialTimeLeft);
-    setTimeLeft(savedTimeLeft);
+      console.log("testInfo.timeName ", testInfo.timeName);
+      console.log("initialTimeLeft ", initialTimeLeft);
+      console.log("savedTimeLeft ", savedTimeLeft);
 
-    if (initialTimeLeft > 0 && savedTimeLeft > 0) {
-      const intervalId = setInterval(() => {
-        setTimeLeft((prevTimeLeft) => {
-          if (prevTimeLeft === 0) {
-            clearInterval(intervalId);
-            handleTimeFinished();
-            return 0;
-          }
-          return prevTimeLeft - 1;
-        });
-      }, 1000);
+      setTimeLimit(initialTimeLeft);
+      setTimeLeft(savedTimeLeft);
 
-      return () => clearInterval(intervalId);
+      if (initialTimeLeft > 0 && savedTimeLeft > 0) {
+        const intervalId = setInterval(() => {
+          setTimeLeft((prevTimeLeft) => {
+            localStorage.setItem("timeLeft", prevTimeLeft - 1); // Update timeLeft in localStorage
+            if (prevTimeLeft === 1) {
+              clearInterval(intervalId);
+              handleTimeFinished();
+              return 0;
+            }
+            return prevTimeLeft - 1;
+          });
+        }, 1000);
+
+        return () => clearInterval(intervalId);
+      }
     }
   }, []);
 
@@ -188,7 +195,6 @@ function StartTest() {
         testHeaders
       );
       if (response.status === 201) {
-        console.log(response.data.questions);
         if (response.data.questions.length > 0) {
           setQuestions(response.data.questions);
         } else {
@@ -228,8 +234,6 @@ function StartTest() {
       setResultFetched(fetchResult.result);
       // setGettingData(fetchResult.retrievingResult);
       // setSendingData(fetchResult.sendingData);
-    } else {
-      setResultFetched({});
     }
   }, [fetchResult]);
   const handleSubmit = () => {

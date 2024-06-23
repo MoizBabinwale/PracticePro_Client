@@ -4,6 +4,7 @@ import { TEST_API } from "../actions/api";
 import Loader from "./Loader";
 import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { FaTrash } from "react-icons/fa";
 
 function AllTests() {
   const [testData, setTestData] = useState([]);
@@ -76,11 +77,56 @@ function AllTests() {
         await deleteQuestion(item._id);
         Swal.fire("Deleted!", "The test has been deleted.", "success");
       } else {
-        Swal.fire("Cancelled", "The test is safe.", "error");
+        Swal.fire("Cancelled", "The Test is safe.", "error");
       }
     } catch (error) {
-      console.error("Error deleting the test:", error);
-      Swal.fire("Error", "There was an error deleting the test.", "error");
+      console.error("Error deleting the Subject:", error);
+      Swal.fire("Error", "There was an error deleting the Test.", "error");
+    }
+  };
+
+  const handelSubjectDelte = async (testId, subjectId) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you really want to delete the Subject?.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "No, cancel!",
+    });
+
+    if (result.isConfirmed) {
+      // Run deleteQuestion function
+      await handleDeleteSubject(testId, subjectId);
+      Swal.fire("Deleted!", "The Subject has been deleted.", "success");
+    } else {
+      Swal.fire("Cancelled", "The Subject is safe.", "error");
+    }
+  };
+
+  const handleDeleteSubject = async (testId, subjectId) => {
+    try {
+      const response = await fetch(`/api/tests/${testId}/subjects/${subjectId}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        // Update the testData state to remove the deleted subject
+        setTestData((prevData) =>
+          prevData.map((item) => {
+            if (item.id === testId) {
+              item.subjectIds = item.subjectIds.filter((subject) => subject.id !== subjectId);
+            }
+            return item;
+          })
+        );
+      } else {
+        console.error("Error deleting subject:", response.status);
+      }
+    } catch (error) {
+      console.error("Error deleting subject:", error);
     }
   };
 
@@ -106,7 +152,10 @@ function AllTests() {
                     <div className="flex flex-col">
                       <span className="text-xl font-bold">{item.testName} </span>
                       {item.subjectIds.map((data, i) => (
-                        <span className="text-gray-600">{data.name}</span>
+                        <span className="text-gray-600 flex gap-2 items-center">
+                          {data.name}
+                          <FaTrash className="ml-2 cursor-pointer" onClick={() => handelSubjectDelte(item.id, data.id)} />
+                        </span>
                       ))}
                     </div>
                   </td>
