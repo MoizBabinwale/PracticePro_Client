@@ -188,7 +188,6 @@ function StartTest() {
         testHeaders
       );
       if (response.status === 201) {
-        console.log(response.data.questions);
         if (response.data.questions.length > 0) {
           setQuestions(response.data.questions);
         } else {

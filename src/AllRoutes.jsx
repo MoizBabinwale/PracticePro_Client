@@ -14,6 +14,9 @@ import AllTests from "./components/AllTests";
 import ContactUs from "./components/ContactUs";
 import AllPayments from "./components/AllPayments";
 import AllUsers from "./components/AllUsers";
+import PrivacyPolicy from "./components/PrivacyPolicy";
+import TermsAndCondition from "./components/TermsAndCondition";
+import AboutUs from "./components/AboutUs";
 
 const AllRoutes = () => {
   return (
@@ -32,6 +35,9 @@ const AllRoutes = () => {
       <Route exact path="/customer-support" element={<ContactUs />} />
       <Route exact path="/AllPayments" element={<AllPayments />} />
       <Route exact path="/AllUsers" element={<AllUsers />} />
+      <Route exact path="/privacyPolicy" element={<PrivacyPolicy />} />
+      <Route exact path="/termsCondition" element={<TermsAndCondition />} />
+      <Route exact path="/aboutUs" element={<AboutUs />} />
     </Routes>
   );
 };
