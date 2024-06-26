@@ -20,7 +20,7 @@ const Footer = () => {
   const loc = useLocation();
 
   return (
-    <footer className="relative bg-[#4a98f7] pt-8 pb-6 mt-6">
+    <footer className="relative bg-[#4a98f7] pt-8 pb-6 mt-6" style={{ marginTop: loc.pathname.includes("/startTest") ? "200px" : "" }}>
       <div className="container mx-auto px-4">
         <div className="flex flex-wrap text-left lg:text-left">
           <div className="w-full lg:w-6/12 px-4">
@@ -30,17 +30,19 @@ const Footer = () => {
               <b>Contact Number</b>
             </p>
             <p>+91 8793021099</p>
+<<<<<<< HEAD
             {/* <div className="mt-6 lg:mb-0 mb-6 flex">
               <button
                 className="flex  bg-white text-lightBlue-400 shadow-lg font-normal h-10 w-10 items-center justify-center align-center rounded-full outline-none focus:outline-none mr-2"
                 type="button"
               >
+=======
+            <div className="mt-6 lg:mb-0 mb-6 flex">
+              <button className="flex  bg-white text-lightBlue-400 shadow-lg font-normal h-10 w-10 items-center justify-center align-center rounded-full outline-none focus:outline-none mr-2" type="button">
+>>>>>>> cb2664c42c69fbdb337f1a66289d09beee4ca28b
                 <FaXTwitter />
               </button>
-              <button
-                className="flex  bg-white text-lightBlue-600 shadow-lg font-normal h-10 w-10 items-center justify-center align-center rounded-full outline-none focus:outline-none mr-2"
-                type="button"
-              >
+              <button className="flex  bg-white text-lightBlue-600 shadow-lg font-normal h-10 w-10 items-center justify-center align-center rounded-full outline-none focus:outline-none mr-2" type="button">
                 <FaFacebook />
               </button>
               <button className="flex  bg-white text-pink-400 shadow-lg font-normal h-10 w-10 items-center justify-center align-center rounded-full outline-none focus:outline-none mr-2" type="button">
@@ -67,8 +69,43 @@ const Footer = () => {
                     </a>
                   </li> */}
                   <li>
+<<<<<<< HEAD
                     <a className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm">
                       <Link to="/privacyPolicy">Privacy Policy</Link>
+=======
+                    <a className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm" href="https://www.github.com/creativetimofficial?ref=njs-profile">
+                      Github
+                    </a>
+                  </li>
+                  <li>
+                    <a className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm" href="https://www.creative-tim.com/bootstrap-themes/free?ref=njs-profile">
+                      Free Products
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div className="w-full lg:w-4/12 px-4">
+                <span className="block uppercase text-blueGray-500 text-sm font-semibold mb-2">Other Resources</span>
+                <ul className="list-unstyled">
+                  <li>
+                    <a className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm" href="https://github.com/creativetimofficial/notus-js/blob/main/LICENSE.md?ref=njs-profile">
+                      MIT License
+                    </a>
+                  </li>
+                  <li>
+                    <a className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm" href="https://creative-tim.com/terms?ref=njs-profile">
+                      Terms &amp; Conditions
+                    </a>
+                  </li>
+                  <li>
+                    <a className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm" href="https://creative-tim.com/privacy?ref=njs-profile">
+                      Privacy Policy
+                    </a>
+                  </li>
+                  <li>
+                    <a className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm" href="https://creative-tim.com/contact-us?ref=njs-profile">
+                      Contact Us
+>>>>>>> cb2664c42c69fbdb337f1a66289d09beee4ca28b
                     </a>
                   </li>
                 </ul>

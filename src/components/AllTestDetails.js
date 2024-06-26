@@ -57,7 +57,8 @@ function AllTestDetails() {
             <table className="table-fixed w-full text-sm md:text-lg">
               <thead className="bg-slate-500 text-white">
                 <tr>
-                  <th className="w-1/6 py-2 pl-2">Sr. No.</th>
+                  <th className="w-[65px] py-2 pl-2">Sr. No.</th>
+                  <th className="w-1/6 py-2">Subject Name</th>
                   <th className="w-1/6 py-2">Total Questions</th>
                   <th className="w-1/4 py-2">Date</th>
                   <th className="w-1/6 py-2">Score</th>
@@ -69,6 +70,7 @@ function AllTestDetails() {
                 {result.map((item, index) => (
                   <tr key={index} className={item.score >= item.totalQuestions * 0.6 ? "bg-green-200" : "bg-red-200"}>
                     <td className="py-2 pl-2">{index + 1}</td>
+                    <td className="py-2">{item?.subjectId?.name ? item?.subjectId?.name : "-"}</td>
                     <td className="py-2">{item.totalQuestions}</td>
                     <td className="py-2">{new Date(item.date).toLocaleDateString()}</td>
                     <td className="py-2">{item.score}</td>

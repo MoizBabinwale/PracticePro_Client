@@ -1,10 +1,11 @@
-import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
+import axios from "axios";
 import { API } from "../../actions/api";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthProvider";
 import Loader from "../Loader";
 import Swal from "sweetalert2";
+import logo from "../../assets/Practisepro.png";
 
 function BuyPremiumPage() {
   const [token, setToken] = useState("");
@@ -44,8 +45,6 @@ function BuyPremiumPage() {
 
   const getToken = async (e) => {
     e.preventDefault();
-    console.log(e.target.value);
-    setLoading(true);
 
     const subscribefor = e.target.dataset.pack;
     const amount = e.target.dataset.amount;
@@ -60,7 +59,7 @@ function BuyPremiumPage() {
     localStorage.setItem("subscriptionFor", subscribefor);
     setSubscriptionSelected(subscribefor);
     checkoutHandler(amount, form?.name, form?.id);
-    //   setLoading(false);
+    // setLoading(false);
     // } catch (error) {
     //   console.log("error ", error);
     //   setLoading(false);
@@ -85,9 +84,30 @@ function BuyPremiumPage() {
       currency: "INR",
       name: "PRACTISE PRO",
       description: "Tutorial of RazorPay",
-      image: "https://avatars.githubusercontent.com/u/25058652?v=4",
+      image: logo,
       order_id: order.id,
-      callback_url: API + "/paymentverification",
+      // callback_url: API + "/paymentverification",
+      handler: async function (response) {
+        const body = {
+          ...response,
+        };
+        if (body) {
+          try {
+            const validateRes = await axios.post(API + "/payment/paymentverification", body, {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            });
+
+            const jsonRes = validateRes.data;
+            if (jsonRes) {
+              window.location.href = jsonRes.redirectUrl;
+            }
+          } catch (error) {
+            console.error("Error making API request:", error?.response);
+          }
+        }
+      },
       prefill: {
         name: form?.name,
         email: form?.email,
@@ -101,6 +121,15 @@ function BuyPremiumPage() {
       },
     };
     const razor = await new window.Razorpay(options);
+    razor.on("payment.failed", function (response) {
+      alert(response.error.code);
+      alert(response.error.description);
+      alert(response.error.source);
+      alert(response.error.step);
+      alert(response.error.reason);
+      alert(response.error.metadata.order_id);
+      alert(response.error.metadata.payment_id);
+    });
     razor.open();
   };
 

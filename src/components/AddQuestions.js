@@ -66,7 +66,8 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions, uassignedQue
   useEffect(() => {
     var difficulties = getTest.difficulties.difficultyLevels;
     if (difficulties) {
-      setDifficulties(difficulties);
+      const newDiff = difficulties.filter((item) => item.level !== "Mixed");
+      setDifficulties(newDiff);
     }
   }, [getTest]);
 
@@ -400,15 +401,12 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions, uassignedQue
   }, []);
   const subjects = useSelector((state) => state.test?.subjects?.data);
   useEffect(() => {
-    console.log("questionsData1 ", questionsData1);
-    console.log("subjects ", subjects);
     if (subjects) {
       setAllSubjects(subjects);
     }
   }, [questionsData1, subjects]);
 
   const handleTestSelection = (event, selectedTests) => {
-    console.log("selectedTests ", selectedTests);
     setQuestionsData1((prevQuestionsData1) => ({
       ...prevQuestionsData1,
       testIds: selectedTests.map((test) => ({
@@ -419,7 +417,6 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions, uassignedQue
   };
 
   const handleSubjectSelection = (event, selectedSubjects) => {
-    console.log("selectedSubjects ", selectedSubjects);
     setQuestionsData1((prevQuestionsData1) => ({
       ...prevQuestionsData1,
       subjectIds: selectedSubjects.map((subject) => ({
@@ -438,7 +435,6 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions, uassignedQue
       };
       const response = await axios.post(TEST_API + "/assignQuestionToTestsAndSubjects", data, testHeaders);
       if (response) {
-        console.log("response ", response);
         Swal.fire("Your Question Has been assigned to Test.", "success");
         getAllUnassignedQue();
       }
@@ -502,13 +498,7 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions, uassignedQue
                   <>
                     {options.map((option, index) => (
                       <div key={index} className="flex items-center mb-2">
-                        <input
-                          type="text"
-                          value={option.text}
-                          onChange={(e) => handleChangeOption(index, e.target.value)}
-                          className="w-full border-gray-300 rounded-md px-4 py-2 mr-2 focus:outline-none focus:border-blue-500"
-                          placeholder={`Option ${index + 1}`}
-                        />
+                        <input type="text" value={option.text} onChange={(e) => handleChangeOption(index, e.target.value)} className="w-full border-gray-300 rounded-md px-4 py-2 mr-2 focus:outline-none focus:border-blue-500" placeholder={`Option ${index + 1}`} />
                         <label className="inline-flex items-center cursor-pointer">
                           <input type="radio" name="correctAnswer" checked={option.isCorrect} onChange={() => handleCorrectChange(index)} className="form-radio h-5 w-5 text-blue-500" />
                           <span className="ml-2">Correct</span>
@@ -604,24 +594,10 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions, uassignedQue
                       <img className="h-[100px] ml-3" height={"100px"} width={"25%"} src={baseUrl + option.text} alt="option" disabled={uassignedQuestions} />
                     </div>
                   ) : (
-                    <input
-                      type="text"
-                      value={option.text}
-                      onChange={(e) => EditChangeOption(index, key, e.target.value)}
-                      className="w-full border-gray-300 rounded-md px-4 py-2 mr-2 focus:outline-none focus:border-blue-500"
-                      placeholder={`Option ${index + 1}`}
-                      disabled={uassignedQuestions}
-                    />
+                    <input type="text" value={option.text} onChange={(e) => EditChangeOption(index, key, e.target.value)} className="w-full border-gray-300 rounded-md px-4 py-2 mr-2 focus:outline-none focus:border-blue-500" placeholder={`Option ${index + 1}`} disabled={uassignedQuestions} />
                   )}
                   <label className="inline-flex items-center cursor-pointer">
-                    <input
-                      type="radio"
-                      name={`correctAnswer_${key}`}
-                      checked={option.isCorrect}
-                      onChange={() => EditCorrectOption(index, key)}
-                      className="form-radio h-5 w-5 text-blue-500"
-                      disabled={uassignedQuestions}
-                    />
+                    <input type="radio" name={`correctAnswer_${key}`} checked={option.isCorrect} onChange={() => EditCorrectOption(index, key)} className="form-radio h-5 w-5 text-blue-500" disabled={uassignedQuestions} />
                     <span className="ml-2">Correct</span>
                   </label>
                 </div>
@@ -657,26 +633,12 @@ const AddQuestions = ({ testId, topicId, testData, getAllQuestions, uassignedQue
                               {test.testName}
                             </div>
                           ))} */}
-                          <Autocomplete
-                            multiple
-                            id="tags-standard"
-                            options={testList}
-                            getOptionLabel={(option) => option.testName}
-                            onChange={handleTestSelection}
-                            renderInput={(params) => <TextField {...params} variant="standard" label="Multiple values" placeholder="Favorites" />}
-                          />
+                          <Autocomplete multiple id="tags-standard" options={testList} getOptionLabel={(option) => option.testName} onChange={handleTestSelection} renderInput={(params) => <TextField {...params} variant="standard" label="Multiple values" placeholder="Favorites" />} />
                         </div>
                         {/* Multiple select checkboxes for Subject IDs */}
                         <div className="mt-2">
                           <label>Select Subjects:</label>
-                          <Autocomplete
-                            multiple
-                            id="tags-standard"
-                            options={allSubjects}
-                            getOptionLabel={(option) => option.name}
-                            onChange={handleSubjectSelection}
-                            renderInput={(params) => <TextField {...params} variant="standard" label="Multiple values" placeholder="Favorites" />}
-                          />
+                          <Autocomplete multiple id="tags-standard" options={allSubjects} getOptionLabel={(option) => option.name} onChange={handleSubjectSelection} renderInput={(params) => <TextField {...params} variant="standard" label="Multiple values" placeholder="Favorites" />} />
                         </div>
                         <div>
                           <button

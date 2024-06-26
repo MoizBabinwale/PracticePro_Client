@@ -24,30 +24,37 @@ function StartTest() {
 
   useEffect(() => {
     const testInfo = JSON.parse(localStorage.getItem("testData"));
-    var savedTimeLeft = parseInt(localStorage.getItem("timeLeft"), 10) || 600;
-    const initialTimeLeft = testInfo?.timeName ? testInfo.timeName * 60 : 600; // Convert minutes to seconds
+    if (testInfo) {
+      const initialTimeLeft = testInfo?.timeName ? testInfo.timeName * 60 : 600; // Convert minutes to seconds
+      let savedTimeLeft = parseInt(localStorage.getItem("timeLeft"), 10);
 
-    if (savedTimeLeft === 0) {
-      localStorage.setItem("timeLeft", (testInfo?.timeName * 60).toString());
-      savedTimeLeft = testInfo?.timeName * 60;
-    }
+      if (!savedTimeLeft || savedTimeLeft <= 0) {
+        savedTimeLeft = initialTimeLeft;
+        localStorage.setItem("timeLeft", savedTimeLeft.toString());
+      }
 
-    setTimeLimit(initialTimeLeft);
-    setTimeLeft(savedTimeLeft);
+      console.log("testInfo.timeName ", testInfo.timeName);
+      console.log("initialTimeLeft ", initialTimeLeft);
+      console.log("savedTimeLeft ", savedTimeLeft);
 
-    if (initialTimeLeft > 0 && savedTimeLeft > 0) {
-      const intervalId = setInterval(() => {
-        setTimeLeft((prevTimeLeft) => {
-          if (prevTimeLeft === 0) {
-            clearInterval(intervalId);
-            handleTimeFinished();
-            return 0;
-          }
-          return prevTimeLeft - 1;
-        });
-      }, 1000);
+      setTimeLimit(initialTimeLeft);
+      setTimeLeft(savedTimeLeft);
 
-      return () => clearInterval(intervalId);
+      if (initialTimeLeft > 0 && savedTimeLeft > 0) {
+        const intervalId = setInterval(() => {
+          setTimeLeft((prevTimeLeft) => {
+            localStorage.setItem("timeLeft", prevTimeLeft - 1); // Update timeLeft in localStorage
+            if (prevTimeLeft === 1) {
+              clearInterval(intervalId);
+              handleTimeFinished();
+              return 0;
+            }
+            return prevTimeLeft - 1;
+          });
+        }, 1000);
+
+        return () => clearInterval(intervalId);
+      }
     }
   }, []);
 
@@ -272,6 +279,7 @@ function StartTest() {
   const handleResetData = () => {
     dispatch(resetResult());
   };
+
   const { width, height } = useWindowSize();
   return (
     <div className="container">
@@ -303,7 +311,7 @@ function StartTest() {
             <div>Time Left: {formatTime(timeLeft)}</div>
           </div>
 
-          <div className="mt-7 mx-3 pl-2 pt-4 md:flex-row gap-3 md:gap-0 flex-col" style={{ display: "flex" }}>
+          <div className="mt-7 md:mx-3 md:pl-2 pt-4 md:flex-row gap-3 md:gap-0 flex-col" style={{ display: "flex" }}>
             {/* Question map on the right side */}
 
             {/* Question and options on the left side */}
@@ -319,9 +327,7 @@ function StartTest() {
                     </div>
                   ) : (
                     <>
-                      {questions[currentQuestionIndex]?.text.split(".")[1] === "png" ||
-                      questions[currentQuestionIndex]?.text.split(".")[1] === "jpg" ||
-                      questions[currentQuestionIndex]?.text.split(".")[1] === "jpeg" ? (
+                      {questions[currentQuestionIndex]?.text.split(".")[1] === "png" || questions[currentQuestionIndex]?.text.split(".")[1] === "jpg" || questions[currentQuestionIndex]?.text.split(".")[1] === "jpeg" ? (
                         <img className="h-[100px] ml-3" height={"100px"} width={"25%"} src={baseUrl + questions[currentQuestionIndex].text} alt="option" />
                       ) : (
                         <p>{questions[currentQuestionIndex]?.text}</p>
@@ -343,12 +349,7 @@ function StartTest() {
                         checked={questions[currentQuestionIndex].selectedOption === option._id} // Add this if you want to control the checked state
                       />
                       {String.fromCharCode(65 + index)}
-                      {")"}{" "}
-                      {option.text.split(".")[1] === "png" || option.text.split(".")[1] === "jpg" || option.text.split(".")[1] === "jpeg" ? (
-                        <img className="h-[100px] ml-3" height={"100px"} width={"25%"} src={baseUrl + option.text} alt="option" />
-                      ) : (
-                        option.text
-                      )}
+                      {")"} {option.text.split(".")[1] === "png" || option.text.split(".")[1] === "jpg" || option.text.split(".")[1] === "jpeg" ? <img className="h-[100px] ml-3" height={"100px"} width={"25%"} src={baseUrl + option.text} alt="option" /> : option.text}
                     </li>
                   ))}
                 </ul>
@@ -356,17 +357,13 @@ function StartTest() {
 
               {/* Next and previous buttons */}
               <div className="flex flex-wrap relative items-end justify-end gap-2">
-                <button className="flex-end bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" id="submitTest" onClick={handleSubmit}>
+                <button className="flex-end bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full text-sm md:text-lg" id="submitTest" onClick={handleSubmit}>
                   Submit
                 </button>
-                <button className="flex-end bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" onClick={handlePreviousQuestion} disabled={currentQuestionIndex === 0}>
+                <button className="flex-end bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full text-sm md:text-lg" onClick={handlePreviousQuestion} disabled={currentQuestionIndex === 0}>
                   Previous
                 </button>
-                <button
-                  className="flex-end bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
-                  onClick={handleNextQuestion}
-                  disabled={currentQuestionIndex === questions.length - 1}
-                >
+                <button className="flex-end bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full text-sm md:text-lg" onClick={handleNextQuestion} disabled={currentQuestionIndex === questions.length - 1}>
                   Next
                 </button>
               </div>
@@ -389,11 +386,7 @@ function StartTest() {
               </div>
               <div className="flex flex-wrap gap-3 p-2" style={{ maxHeight: "400px", overflowY: "auto" }}>
                 {questions.map((item, index) => (
-                  <span
-                    className={`p-3 rounded-full border-2 cursor-pointer ${item.selectedOption ? "bg-green-500" : ""} ${index + 1 === currentQuestionIndex + 1 ? "bg-blue-600 text-white" : ""}`}
-                    onClick={() => setQuestionNumber(index)}
-                    key={index}
-                  >
+                  <span className={`p-3 rounded-full border-2 cursor-pointer ${item.selectedOption ? "bg-green-500" : ""} ${index + 1 === currentQuestionIndex + 1 ? "bg-blue-600 text-white" : ""}`} onClick={() => setQuestionNumber(index)} key={index}>
                     {index + 1}
                   </span>
                 ))}

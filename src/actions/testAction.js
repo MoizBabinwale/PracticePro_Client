@@ -30,6 +30,7 @@ const fetchedSuccssfully = (responseData) => {
     payload: { responseData },
   };
 };
+
 export const resetResult = () => {
   return {
     type: RESULTRESET, // No need to wrap responseData in an object
