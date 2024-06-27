@@ -54,15 +54,21 @@ const Footer = () => {
                 {/* <span className="block uppercase text-blueGray-500 text-sm font-semibold mb-2">Useful Links</span> */}
                 <ul className="list-unstyled">
                   <li>
+                    <span className="text-blueGray-600 font-semibold block pb-2 text-sm">
+                      <p className="mb-3">Address</p>
+                      <p>Date Nagar, Gangapur road, Nashik. 422013</p>
+                    </span>
+                  </li>
+                  <li>
                     <a className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm">
                       <Link to="/aboutUs"> About Us</Link>
                     </a>
                   </li>
-                  {/* <li>
+                  <li>
                     <a className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm">
                       <Link to="/termsCondition"> Terms &amp; Conditions</Link>
                     </a>
-                  </li> */}
+                  </li>
                   <li>
                     <a className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm">
                       <Link to="/privacyPolicy">Privacy Policy</Link>

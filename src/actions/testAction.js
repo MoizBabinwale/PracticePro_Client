@@ -2,11 +2,8 @@ import axios from "axios";
 import { SUBJECTFETCHED, TIMEFETCHED, DIFFICULTYFETCHED, SENDINGDATA, RETEINGRESULT, RESULTFETCHED, RESULTRESET } from "../Constants/Constant";
 import { TEST_API } from "./api";
 
-var token;
-const profile = JSON.parse(localStorage.getItem("Profile"));
-if (profile) {
-  token = profile.token;
-}
+const token = JSON.parse(localStorage.getItem("Profile"))?.token ?? "";
+
 export const testHeaders = {
   headers: {
     "Content-Type": "application/json",
@@ -93,8 +90,16 @@ export const getTimeLimits = () => {
 export const evaluateResult = (answerData) => {
   return async (dispatch) => {
     try {
+      const token = JSON.parse(localStorage.getItem("Profile"))?.token ?? "";
+
+      const testHead = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token, // Example of a custom header
+        },
+      };
       dispatch(sendingData());
-      const response = await axios.post(TEST_API + "/checkAnswer", { questions: answerData }, testHeaders); // Await the axios request
+      const response = await axios.post(TEST_API + "/checkAnswer", { questions: answerData }, testHead); // Await the axios request
       dispatch(retrwingData());
       if (response) {
         const data = response.data;
