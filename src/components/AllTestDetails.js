@@ -19,6 +19,7 @@ function AllTestDetails() {
       navigate("/login");
     }
   }, []);
+
   const getAllTestRes = async () => {
     try {
       setLoading(true);
@@ -39,7 +40,7 @@ function AllTestDetails() {
     }
   };
   return (
-    <div className="container pt-4">
+    <div className="container pt-4" style={{ maxWidth: "95%" }}>
       {loading ? (
         <Loader />
       ) : (
