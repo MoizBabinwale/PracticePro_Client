@@ -28,7 +28,15 @@ function AllTestDetails() {
       // const payload = {
       //   userId : user._id
       // }
-      const response = await axios.get(TEST_API + "/getAllResult", testHeaders);
+      const token = JSON.parse(localStorage.getItem("Profile"))?.token ?? "";
+
+      const testHead = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token, // Example of a custom header
+        },
+      };
+      const response = await axios.get(TEST_API + "/getAllResult", testHead);
 
       if (response) {
         setResult(response.data.results);

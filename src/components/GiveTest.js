@@ -101,7 +101,7 @@ function GiveTest() {
     dispatch(resetResult());
     // Handle starting the test
     var numberOfQuestions = document.getElementById("numberOfQuestions").value;
-    if (!numberOfQuestions || !testId || !topicId || !timeId || !difficultyId) {
+    if (!numberOfQuestions || !testId || !topicId || !difficultyId) {
       Swal.fire({
         position: "center",
         icon: "error",
@@ -109,13 +109,24 @@ function GiveTest() {
         showConfirmButton: false,
         timer: 2000,
       });
+      setLoading(false);
+      return;
+    }
+    if (!timeName || timeName < 5) {
+      Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "Please Enter Time Limit It Should Be Greater than 5 Minutes!",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      setLoading(false);
       return;
     }
 
     const testData = {
       testId,
       topicId,
-      timeId,
       difficultyId,
       numberOfQuestions,
       testName,
@@ -199,18 +210,18 @@ function GiveTest() {
               />
             </div>
             <div className="col-lg-8 my-3">
-              <label>Time</label>
-              <Autocomplete
-                className=""
-                onChange={(e, value) => handleTimeChange(value)}
-                options={timelist || []}
-                getOptionLabel={(option) => option.time || ""}
-                value={{
-                  _id: timeId,
-                  time: timeName,
-                }}
-                renderInput={(params) => <TextField {...params} value={timeName} variant="standard" placeholder="Select Time" />}
+              {/* <label>Time</label> */}
+              <TextField
+                type="number"
+                className="w-full"
+                min="1"
+                id="numberOfQuestions"
                 disabled={!premiumUser}
+                onKeyDown={handleNumQuestionsChange}
+                onChange={(e) => setTimeName(e.target.value)}
+                label="Time"
+                variant="standard"
+                placeholder="Enter Time in Minutes"
               />
             </div>
             {/* < type="number" value={time} onChange={handleTimeChange} label="Time (in minutes)" variant="standard" placeholder="Enter Time" /> */}

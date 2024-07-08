@@ -18,6 +18,7 @@ function StartTest() {
   const [resultFetched, setResultFetched] = useState({});
   const [gettingData, setGettingData] = useState(false);
   const [sendingData, setSendingData] = useState(false);
+  const [timeTaken, setTimeTaken] = useState(0);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -32,10 +33,6 @@ function StartTest() {
         savedTimeLeft = initialTimeLeft;
         localStorage.setItem("timeLeft", savedTimeLeft.toString());
       }
-
-      console.log("testInfo.timeName ", testInfo.timeName);
-      console.log("initialTimeLeft ", initialTimeLeft);
-      console.log("savedTimeLeft ", savedTimeLeft);
 
       setTimeLimit(initialTimeLeft);
       setTimeLeft(savedTimeLeft);
@@ -248,6 +245,8 @@ function StartTest() {
         }
       });
       setResultFetched({ score: newScore });
+      const timeTaken = timeLimit - timeLeft;
+      setTimeTaken(timeTaken);
     } else {
       document.getElementById("submitTest").disabled = true;
       try {
@@ -255,6 +254,8 @@ function StartTest() {
           questions,
         };
         dispatch(evaluateResult(answerData));
+        const timeTaken = timeLimit - timeLeft;
+        setTimeTaken(timeTaken);
         localStorage.removeItem("timeLeft");
         localStorage.removeItem("testData");
       } catch (error) {
@@ -281,6 +282,13 @@ function StartTest() {
   };
 
   const { width, height } = useWindowSize();
+
+  const formatLeftTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes > 0 ? minutes + " minute" + (minutes > 1 ? "s" : "") : ""} ${seconds > 0 ? seconds + " second" + (seconds > 1 ? "s" : "") : ""}`.trim();
+  };
+
   return (
     <div className="container">
       {gettingData || sendingData || resultFetched ? (
@@ -293,6 +301,7 @@ function StartTest() {
               Result Fetched Successfully...!
               <br />
               <p className="text-black items-center">Total Score : {resultFetched.score}</p>
+              <p>{timeTaken && <>You completed the test in {formatLeftTime(timeTaken)}</>}</p>
               <Link to="/">
                 <button className="bg-blue-500 flex items-center hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => handleResetData()}>
                   <IoIosHome /> &nbsp;&nbsp; Go to Home Page
@@ -327,7 +336,9 @@ function StartTest() {
                     </div>
                   ) : (
                     <>
-                      {questions[currentQuestionIndex]?.text.split(".")[1] === "png" || questions[currentQuestionIndex]?.text.split(".")[1] === "jpg" || questions[currentQuestionIndex]?.text.split(".")[1] === "jpeg" ? (
+                      {questions[currentQuestionIndex]?.text.split(".")[1] === "png" ||
+                      questions[currentQuestionIndex]?.text.split(".")[1] === "jpg" ||
+                      questions[currentQuestionIndex]?.text.split(".")[1] === "jpeg" ? (
                         <img className="h-[100px] ml-3" height={"100px"} width={"25%"} src={baseUrl + questions[currentQuestionIndex].text} alt="option" />
                       ) : (
                         <p>{questions[currentQuestionIndex]?.text}</p>
@@ -349,7 +360,12 @@ function StartTest() {
                         checked={questions[currentQuestionIndex].selectedOption === option._id} // Add this if you want to control the checked state
                       />
                       {String.fromCharCode(65 + index)}
-                      {")"} {option.text.split(".")[1] === "png" || option.text.split(".")[1] === "jpg" || option.text.split(".")[1] === "jpeg" ? <img className="h-[100px] ml-3" height={"100px"} width={"25%"} src={baseUrl + option.text} alt="option" /> : option.text}
+                      {")"}{" "}
+                      {option.text.split(".")[1] === "png" || option.text.split(".")[1] === "jpg" || option.text.split(".")[1] === "jpeg" ? (
+                        <img className="h-[100px] ml-3" height={"100px"} width={"25%"} src={baseUrl + option.text} alt="option" />
+                      ) : (
+                        option.text
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -360,10 +376,18 @@ function StartTest() {
                 <button className="flex-end bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full text-sm md:text-lg" id="submitTest" onClick={handleSubmit}>
                   Submit
                 </button>
-                <button className="flex-end bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full text-sm md:text-lg" onClick={handlePreviousQuestion} disabled={currentQuestionIndex === 0}>
+                <button
+                  className="flex-end bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full text-sm md:text-lg"
+                  onClick={handlePreviousQuestion}
+                  disabled={currentQuestionIndex === 0}
+                >
                   Previous
                 </button>
-                <button className="flex-end bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full text-sm md:text-lg" onClick={handleNextQuestion} disabled={currentQuestionIndex === questions.length - 1}>
+                <button
+                  className="flex-end bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full text-sm md:text-lg"
+                  onClick={handleNextQuestion}
+                  disabled={currentQuestionIndex === questions.length - 1}
+                >
                   Next
                 </button>
               </div>
@@ -386,7 +410,11 @@ function StartTest() {
               </div>
               <div className="flex flex-wrap gap-3 p-2" style={{ maxHeight: "400px", overflowY: "auto" }}>
                 {questions.map((item, index) => (
-                  <span className={`p-3 rounded-full border-2 cursor-pointer ${item.selectedOption ? "bg-green-500" : ""} ${index + 1 === currentQuestionIndex + 1 ? "bg-blue-600 text-white" : ""}`} onClick={() => setQuestionNumber(index)} key={index}>
+                  <span
+                    className={`p-3 rounded-full border-2 cursor-pointer ${item.selectedOption ? "bg-green-500" : ""} ${index + 1 === currentQuestionIndex + 1 ? "bg-blue-600 text-white" : ""}`}
+                    onClick={() => setQuestionNumber(index)}
+                    key={index}
+                  >
                     {index + 1}
                   </span>
                 ))}
